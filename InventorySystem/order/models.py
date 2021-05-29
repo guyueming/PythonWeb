@@ -57,8 +57,8 @@ class OrderModel(models.Model):
     sure_time = models.DateTimeField('确认时间', default=now)
     is_complete = models.BooleanField(
         '是否完成', default=True, blank=False, null=False)
-    complete_time = models.DateTimeField('确认时间', default=now)
-    note = models.TextField('备注', max_length=64)
+    complete_time = models.DateTimeField('完成时间', default=now)
+    note = models.TextField('备注', max_length=256)
     user = models.ForeignKey(
         account.models.AccountModel,
         verbose_name='作者',

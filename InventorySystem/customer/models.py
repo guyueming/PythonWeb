@@ -9,5 +9,6 @@ class CustomerModel(models.Model):
     phone = models.TextField('电话', max_length=64)
     is_enable = models.BooleanField(
         '是否禁用', default=True, blank=False, null=False)
+    note = models.TextField('备注', max_length=256)
     created_time = models.DateTimeField('创建时间', default=now)
     last_mod_time = models.DateTimeField('修改时间', default=now)

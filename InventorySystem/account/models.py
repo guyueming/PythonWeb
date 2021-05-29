@@ -1,6 +1,12 @@
 from django.db import models
 from django.utils.timezone import now
 
+FORM_TYPE = (
+    ('1', '入库'),
+    ('2', '出库'),
+    ('3', '损耗'),
+)
+
 
 class AccountModel(models.Model):
     id = models.AutoField(primary_key=True)

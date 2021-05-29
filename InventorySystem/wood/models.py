@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.timezone import now
 from django.conf import settings
-from account.models import AccountModel
+import account
 
 
 class WoodModel(models.Model):
@@ -19,6 +19,7 @@ class WoodFormModel(models.Model):
         verbose_name='木料',
         on_delete=models.PROTECT)
     count = models.IntegerField('数量', default=0)
+    type = models.CharField('类型', max_length=10, choices=account.FORM_TYPE, default='1')
     is_sure = models.BooleanField(
         '是否确认', default=True, blank=False, null=False)
     user = models.ForeignKey(
