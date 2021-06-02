@@ -1,9 +1,7 @@
 from django.db import models
 from django.utils.timezone import now
-from django.conf import settings
-
-import account.models
 from account.models import AccountModel
+from account.models import FORM_TYPE
 
 
 class PaperModel(models.Model):
@@ -28,11 +26,11 @@ class PaperFormModel(models.Model):
     count = models.IntegerField('数量', default=0)
     factory = models.TextField('厂家', max_length=64)
     arrive_time = models.TextField('到货时间', default=now)
-    type = models.CharField('类型', max_length=10, choices=account.FORM_TYPE, default='1')
+    type = models.CharField('类型', max_length=10, choices=FORM_TYPE, default='1')
     is_sure = models.BooleanField(
         '是否确认', default=True, blank=False, null=False)
     user = models.ForeignKey(
-        account.models.AccountModel,
+        AccountModel,
         verbose_name='作者',
         on_delete=models.PROTECT)
     note = models.TextField('备注', max_length=256)

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div id="primary" class="site-content">
+        <div id="content" role="main">
+                <header class="archive-header">
+                    <h2 class="archive-title"> 主页</h2>
+                </header><!-- .archive-header -->
+
+            <div id="menu">
+                <ul>
+                    {% for func in func_list %}
+                    <li>{{ func }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div id="container">
+            </div>
+
+        </div><!-- #content -->
+    </div><!-- #primary -->
+{% endblock %}
