@@ -9,6 +9,7 @@ class WoodModel(models.Model):
     count = models.IntegerField('数量', default=0)
     is_enable = models.BooleanField(
         '是否禁用', default=True, blank=False, null=False)
+    created_time = models.DateTimeField('创建时间', default=now)
 
 
 class WoodFormModel(models.Model):

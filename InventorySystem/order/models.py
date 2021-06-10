@@ -18,30 +18,36 @@ class OrderModel(models.Model):
         on_delete=models.PROTECT)
     factory = models.ForeignKey(
         CustomerModel,
+        # to_fields=CustomerModel.name,
         verbose_name='厂家',
         on_delete=models.PROTECT)
     wood = models.ForeignKey(
         WoodModel,
+        # to_fields=WoodModel.name,
         verbose_name='材质',
         on_delete=models.PROTECT)
     woodCount = models.TextField('木料数量', max_length=64)
     skin = models.ForeignKey(
         SkinModel,
+        # to_fields=SkinModel.name,
         verbose_name='桉木皮',
         on_delete=models.PROTECT)
     skinCount = models.TextField('桉木皮数量', max_length=64)
     paper = models.ForeignKey(
         PaperModel,
+        # to_fields=PaperModel.name,
         verbose_name='纸张',
         on_delete=models.PROTECT)
     paperCount = models.TextField('纸张数量', max_length=64)
     color = models.TextField('花色', max_length=64)
     technology = models.ForeignKey(
         TechnologyModel,
+        # to_fields=TechnologyModel.name,
         verbose_name='钢铁工艺',
         on_delete=models.PROTECT)
     specifications = models.ForeignKey(
         SpecificationModel,
+        # to_fields=SpecificationModel.name,
         verbose_name='规格',
         on_delete=models.PROTECT)
     packaging = models.TextField('包装', max_length=64)
@@ -61,6 +67,7 @@ class OrderModel(models.Model):
     note = models.TextField('备注', max_length=256)
     user = models.ForeignKey(
         AccountModel,
+        # to_fields=AccountModel.name,
         verbose_name='作者',
         on_delete=models.PROTECT)
     created_time = models.DateTimeField('创建时间', default=now)
