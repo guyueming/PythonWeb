@@ -9,7 +9,7 @@ def add_wood(request):
 
 
 class WoodListView(ListView):
-    paginate_by = 20
+    paginate_by = 15
     model = WoodModel
     template_name = 'woodlist.html'
     context_object_name = 'wood_list'

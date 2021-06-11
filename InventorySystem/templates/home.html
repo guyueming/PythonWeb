@@ -1,32 +1,47 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <style>
-    .flex-container {
-        display: flex;
-        flex-direction: row;
-        font-size: 30px;
-        text-align: center;
-        }
-    </style>
-    <div id="primary">
-                <header>
-                    <h2> 主页</h2>
-                </header><!-- .archive-header -->
-        <div id="content" style="flex-direction:row; display:flex">
-            <div id="menu" style="background-color:#FF0000; color:#00FF00; flex:20%">
-                <ul>
-                    {% for func in func_list %}
-                    <li><a href={{ func.1 }}>{{ func.0 }}</a></li>
-                    {% endfor %}
+    <div id="main">
+        <section class="el-container" style="height: 795px;">
+            <aside class="el-aside menu" style="width: auto;">
+                <div class="logo-wrap">
+                    <div class="left">
+                        <span>库存系统</span>
+                    </div>
+                </div>
+                <ul role="menubar" class="el-menu">
+                    <div class="el-menu-item">
+                        {% for func in func_list %}
+                        <li><a href={{ func.1 }}>{{ func.0 }}</a></li>
+                        {% endfor %}
+                    </div>
                 </ul>
-            </div>
-
-            <div id="container" style="background-color:#00FF00; color:#ff0000; flex:80%">
-                {% block list %}
-                {% endblock %}
-            </div>
-
-        </div><!-- #content -->
+            </aside>
+            <section class="el-container is-vertical">
+                <header class="el-header navbar" style="height: auto; font-size: 12px; padding: 10px;">
+                <div class="float-wrap">
+                    <div class="right">
+                        <div class="el-dropdown">
+                            <button type="button" class="el-button el-button--default waves-effect el-dropdown-selfdefine" aria-haspopup="list" aria-controls="dropdown-menu-6544" role="button" tabindex="0">
+                            <span><i class="fas fa-user"></i>demo<i class="el-icon-arrow-down el-icon--right"></i></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                </header>
+                <main class="el-main">
+                    <div class="el-tabs el-tabs--top el-tabs--border-card" style="height: 100%;">
+                        <div class="el-tabs__content">
+                            <div role="tabpanel" id="pane-1002" aria-labelledby="tab-1002" class="el-tab-pane">
+                                <div class="iframe-wrap">
+                                    {% block list %}
+                                    {% endblock %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </section>
+        </section>
     </div><!-- #primary -->
 {% endblock %}
