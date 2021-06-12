@@ -1,40 +1,99 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from wood.models import WoodModel
+from account.models import FORM_TYPE
+from order.models import OrderModel, WoodFormModel
 from django.views.generic import ListView
 
 
-def add_wood(request):
-    return render(request, 'woodform.html')
+def add(request):
+    return render(request, 'wood.html')
+
+
+def submit(request):
+    name = request.POST.get('name')
+    note = request.POST.get('note')
+    dic = {"name": name, "note": note}
+    WoodModel.objects.create(**dic)
+    return HttpResponseRedirect('/home/wood/list/')
+
+
+def enable(request):
+    mid = request.POST.get('id')
+    WoodModel.objects.filter(id=mid).update()
+    return HttpResponseRedirect('/home/wood/list/')
+
+
+def delete(request):
+    mid = request.POST.get('id')
+    WoodModel.objects.filter(id=mid).delete()
+    return render(request, 'woodlist.html')
 
 
 class WoodListView(ListView):
     paginate_by = 15
     model = WoodModel
     template_name = 'woodlist.html'
-    context_object_name = 'wood_list'
+    context_object_name = 'object_list'
 
     def get_queryset(self):  # 重写get_queryset方法
         # 获取所有is_deleted为False的用户，并且以时间倒序返回数据
-        return WoodModel.objects.filter(is_enable=True).order_by('-created_time')
+        return WoodModel.objects.filter(enable=True).order_by('-last_mod_time')
 
     def get_context_data(self, **kwargs):
         context = super(WoodListView, self).get_context_data(**kwargs)
-        # context['xxx'] = 'xxx' #添加额外的键值对，传到模板中
         return context
 
-    def GET(self, request):
-        search_title = request.GET.get('name')
-        WoodModel.objects.filter(name=search_title).order_by('-created_time')
+
+def form_add(request):
+    woods = WoodModel.objects.filter(enable=True).order_by('name')
+    types = FORM_TYPE
+    return render(request, 'woodform.html', context={'woods': woods, "types": types})
 
 
-def enable(request):
-    return render(request, 'woodlist.html')
+def form_submit(request):
+    time = request.POST.get('time')
+    wood_id = request.POST.get('name')
+    count = int(request.POST.get('count'))
+    form_type = int(request.POST.get('type'))
+    complete = request.POST.get('complete')
+    note = request.POST.get('note')
+    wood = WoodModel.objects.get(id=wood_id)
+    dic = {"arrive_time": time, "name": wood, "count": count, "type": form_type, "note": note}
+    if complete:
+        dic["sure"] = complete
+        update(wood_id, count, form_type == 1)
+    WoodFormModel.objects.create(**dic)
+    return HttpResponseRedirect('/home/wood/form/list/')
 
 
-def submit(request):
-    print("注册中....")
-    name = request.POST.get('username');
-    password = request.POST.get('password');
-    print('用户名:', name, ' 密码:', password)
-    return HttpResponse('添加成功')
+def update(wood_id, wood_count, state):
+    wood = WoodModel.objects.get(id=wood_id)
+    if state:
+        WoodModel.objects.filter(id=wood_id).update(count=(wood_count + wood.count))
+    else:
+        WoodModel.objects.filter(id=wood_id).update(count=(wood.count - wood_count))
+
+
+def form_complete(request):
+    return render(request, 'woodform.html')
+
+
+class WoodFormListView(ListView):
+    paginate_by = 15
+    model = WoodFormModel
+    template_name = 'woodformlist.html'
+    context_object_name = 'object_list'
+
+    def get_queryset(self):
+        name = self.request.GET.get('name')
+        if name:
+            id_list = WoodModel.objects.filter(name__contains=name)
+            return WoodFormModel.objects.filter(name_id__in=id_list).order_by('-last_mod_time')
+        return WoodFormModel.objects.all().order_by('-last_mod_time')
+
+    def get_context_data(self, **kwargs):
+        context = super(WoodFormListView, self).get_context_data(**kwargs)
+        return context
+
+

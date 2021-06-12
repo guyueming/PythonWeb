@@ -1,10 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'home.html' %}
 
-</body>
-</html>
+{% block list %}
+<form method="post" action="/home/skin/form/submit/">
+    {% csrf_token %}
+    <a>时间： <input type="date" name="time" value="2021-05-24"/></a><br>
+    <a>桉木皮：
+        <label>
+            <select name="name">
+                {% for obj in object_list %}
+                <option value={{ obj.id }}>{{ obj.name }}</option>
+                {%endfor%}
+            </select>
+        </label>
+    </a><br>
+    <a>数量：<input type="number" name="count" onkeyup="value=value.replace(/[^\d]/g,'')"/></a><br>
+    <a>类型：
+        <label>
+            <select name="type">
+                {% for t in types %}
+                <option value={{ t.0 }}>{{ t.1 }}</option>
+                {%endfor%}
+            </select>
+        </label>
+    </a><br>
+    <a>备注：<input type="text" name="note"/></a><br>
+    <a>确认：<input type="checkbox" name="complete" value="True"/></a><br>
+    <input type="submit" value="提交">
+</form>
+{% endblock%}

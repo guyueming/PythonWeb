@@ -1,10 +1,30 @@
 {% extends 'home.html' %}
 
 {% block list %}
-<form method="post" action="/home/wood/submit/">
+<form method="post" action="/home/wood/form/submit/">
     {% csrf_token %}
-    <input type="text" name="username" placeholder="用户名"/><br>
-    <input type="text" name="password" placeholder="密码"><br>
-    <input type="submit" value="注册">
+    <a>时间： <input type="date" name="time" value="2021-05-24"/></a><br>
+    <a>木料：
+        <label>
+            <select name="name">
+                {% for w in woods %}
+                <option value={{ w.id }}>{{ w.name }}</option>
+                {%endfor%}
+            </select>
+        </label>
+    </a><br>
+    <a>数量：<input type="number" name="count" onkeyup="value=value.replace(/[^\d]/g,'')"/></a><br>
+    <a>类型：
+        <label>
+            <select name="type">
+                {% for t in types %}
+                <option value={{ t.0 }}>{{ t.1 }}</option>
+                {%endfor%}
+            </select>
+        </label>
+    </a><br>
+    <a>备注：<input type="text" name="note"/></a><br>
+    <a>确认：<input type="checkbox" name="complete" value="True"/></a><br>
+    <input type="submit" value="提交">
 </form>
 {% endblock%}

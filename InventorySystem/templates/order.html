@@ -1,0 +1,88 @@
+{% extends 'home.html' %}
+
+{% block list %}
+<form method="post" action="/home/wood/form/submit/">
+    {% csrf_token %}
+    <a>下单时间： <input type="date" name="time" value="2021-05-24"/></a><br>
+    <a>交货时间： <input type="date" name="time" value="2021-05-24"/></a><br>
+    <a>销售员：
+        <label>
+            <select name="salesman">
+                {% for m in salesman_list %}
+                <option value={{ m.id }}>{{ m.name }}</option>
+                {%endfor%}
+            </select>
+        </label>
+    </a><br>
+    <a>厂家：
+        <label>
+            <select name="wood">
+                {% for m in customer_list %}
+                <option value={{ m.id }}>{{ m.name }}</option>
+                {%endfor%}
+            </select>
+        </label>
+    </a><br>
+    <a>订单数量：<input type="number" name="count" onkeyup="value=value.replace(/[^\d]/g,'')"/></a><br>
+    <a>木料：
+        <label>
+            <select name="wood">
+                {% for m in wood_list %}
+                <option value={{ m.id }}>{{ m.name }}</option>
+                {%endfor%}
+            </select>
+        </label>
+    </a>
+    <a>数量：<input type="number" name="count" onkeyup="value=value.replace(/[^\d]/g,'')"/></a><br>
+
+    <a>桉木皮：
+        <label>
+            <select name="skin">
+                {% for m in skin_list %}
+                <option value={{ m.id }}>{{ m.name }}</option>
+                {%endfor%}
+            </select>
+        </label>
+    </a>
+    <a>数量：<input type="number" name="count" onkeyup="value=value.replace(/[^\d]/g,'')"/></a><br>
+
+    <a>纸张：
+        <label>
+            <select name="paper">
+                {% for m in paper_list %}
+                <option value={{ m.id }}>{{ m.name }}</option>
+                {%endfor%}
+            </select>
+        </label>
+    </a>
+    <a>数量：<input type="number" name="count" onkeyup="value=value.replace(/[^\d]/g,'')"/></a><br>
+    <a>钢板工艺：
+        <label>
+            <select name="technology">
+                {% for m in technology_list %}
+                <option value={{ m.id }}>{{ m.name }}</option>
+                {%endfor%}
+            </select>
+        </label>
+    </a><br>
+    <a>规格：
+        <label>
+            <select name="specification">
+                {% for m in specification_list %}
+                <option value={{ m.id }}>{{ m.name }}</option>
+                {%endfor%}
+            </select>
+        </label>
+    </a><br>
+    <a>花色：<input type="text" name="complete" value=""/></a><br>
+    <a>包装：<input type="text" name="complete" value=""/></a><br>
+    <a>厚度：<input type="text" name="complete" value=""/></a><br>
+    <a>商标：<input type="text" name="complete" value=""/></a><br>
+    <a>打字：<input type="text" name="complete" value=""/></a><br>
+    <a>是否开槽：<input type="checkbox" name="complete" value="True"/></a>
+    <a>是否烘干：<input type="checkbox" name="complete" value="True"/></a><br>
+    <a>备注：<input type="text" name="complete" value=""/></a><br>
+    <a>确认：<input type="checkbox" name="complete" value=""/></a><br>
+    <input type="submit" value="提交">
+</form>
+{% endblock%}

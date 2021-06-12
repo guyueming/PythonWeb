@@ -21,4 +21,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('home/', views.home_view),
     path('home/wood/', include('wood.urls')),
+    path('home/paper/', include('paper.urls')),
+    path('home/skin/', include('skin.urls')),
+    path('home/order/', include('order.urls')),
+    path('home/process/', include('process.urls')),
+    path('home/salesman/', include('salesman.urls')),
+    path('home/customer/', include('customer.urls')),
 ]

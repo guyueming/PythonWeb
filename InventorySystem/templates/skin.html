@@ -1,0 +1,11 @@
+{% extends 'home.html' %}
+
+{% block list %}
+<form method="post" action="/home/skin/submit/">
+    {% csrf_token %}
+    <h2>桉木皮</h2>
+    <a>名称：<input type="text" name="name"/></a><br>
+    <a>备注：<input type="text" name="note"/></a><br>
+    <input type="submit" value="提交">
+</form>
+{% endblock%}

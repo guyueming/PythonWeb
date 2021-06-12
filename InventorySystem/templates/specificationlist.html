@@ -1,0 +1,137 @@
+{% extends 'home.html' %}
+
+{% block list %}
+<style>
+/*表格样式*/
+			table {
+				width: 90%;
+				background: #ccc;
+				margin: 10px auto;
+				border-collapse: collapse;/*border-collapse:collapse合并内外边距(去除表格单元格默认的2个像素内外边距*/
+			}
+			th,td {
+				height: 25px;
+				line-height: 25px;
+				text-align: center;
+				border: 1px solid #ccc;
+			}
+			th {
+				background: #eee;
+				font-weight: normal;
+			}
+			tr {
+				background: #fff;
+			}
+			tr:hover {
+				background: #cc0;
+			}
+			td a {
+				color: #06f;
+				text-decoration: none;
+			}
+			td a:hover {
+				color: #06f;
+				text-decoration: underline;
+			}
+
+    ul{border:0; margin:0; padding:0;}
+    #pagination-flickr li{
+border:0; margin:0; padding:0;
+font-size:11px;
+list-style:none;
+}
+#pagination-flickr a{
+border:solid 1px #DDDDDD;
+margin-right:2px;
+}
+#pagination-flickr .previous-off,
+#pagination-flickr .next-off {
+color:#666666;
+display:block;
+float:left;
+font-weight:bold;
+padding:3px 4px;
+}
+#pagination-flickr .next a,
+#pagination-flickr .previous a {
+font-weight:bold;
+border:solid 1px #FFFFFF;
+}
+#pagination-flickr .active{
+color:#ff0084;
+font-weight:bold;
+display:block;
+float:left;
+padding:4px 6px;
+}
+#pagination-flickr a:link,
+#pagination-flickr a:visited {
+color:#0063e3;
+display:block;
+float:left;
+padding:3px 6px;
+text-decoration:none;
+}
+#pagination-flickr a:hover{
+border:solid 1px #666666;
+}
+
+</style>
+<div id="container">
+    <div class="flex" id="content">
+        <style>
+            #content {
+                position: relative;
+            }
+
+            .object-tools {
+                position: absolute;
+                top: 16px;
+                right: 20px;
+                height: 50px;
+                z-index: 2;
+            }
+
+            .object-tools .import_link, .object-tools .export_link {
+                color: white !important;
+            }
+
+        </style>
+        <div id="content-main">
+            <div class="module" id="changelist">
+                <div id="toolbar">
+                    <div class="right">
+                        <a href="/home/process/specification/add">
+                        <button type="button" class="el-button el-button--primary el-button--small">
+                            <span>新增</span>
+                        </button>
+                        </a>
+                    </div>
+                </div>
+                <div class="results">
+                    <table id="result_list">
+                        <thead>
+                        <th scope="col" class="sortable column-id">序号</th>
+                        <th scope="col" class="sortable column-name">名称</th>
+                        <th scope="col" class="sortable column-name">备注</th>
+                        <th scope="col">状态</th>
+                        </thead>
+                        {% for object in object_list %}
+                        <tr>
+                            <td>{{object.id}}</td>
+                            <td>{{object.name}}</td>
+                            <td>{{object.note}}</td>
+                            <td>
+                                <a> <input type="checkbox" aria-selected="{{ object.enable }}">停用 </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

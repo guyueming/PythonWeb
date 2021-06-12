@@ -1,0 +1,13 @@
+{% extends 'home.html' %}
+
+{% block list %}
+<form method="post" action="/home/paper/submit/">
+    {% csrf_token %}
+    <h2>纸张</h2>
+    <a>名称：<input type="text" name="name"/></a><br>
+    <a>型号：<input type="text" name="type"/></a><br>
+    <a>厂家：<input type="text" name="factory"/></a><br>
+    <a>备注：<input type="text" name="note"/></a><br>
+    <input type="submit" value="提交">
+</form>
+{% endblock%}
