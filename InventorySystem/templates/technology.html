@@ -1,11 +1,14 @@
-{% extends 'home.html' %}
+{% extends 'form.html' %}
 
-{% block list %}
-<form method="post" action="/home/process/technology/submit/">
+{% block form %}
+<form method="post" action="/home/process/technology/submit/" class="basic-grey">
     {% csrf_token %}
-    <h2>钢板工艺</h2>
-    <a>名称：<input type="text" name="name"/></a><br>
-    <a>备注：<input type="text" name="note"/></a><br>
-    <input type="submit" value="提交">
+    <h1>钢板工艺</h1>
+    <label><span>名称：</span><input type="text" name="name"/></label>
+    <label><span>备注：</span><input type="text" name="note"/></label>
+    <label>
+        <span>&nbsp;</span>
+        <input type="submit" value="提交" class="button">
+    </label>
 </form>
 {% endblock%}

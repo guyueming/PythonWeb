@@ -12,4 +12,7 @@ urlpatterns = [
     path('form/list/', views.WoodFormListView.as_view(), name='wood_form_list'),
     path('form/submit/', views.form_submit),
     path('form/complete/', views.form_complete),
+    path('form/sure/', views.form_sure),
+    path('form/complete/', views.form_complete),
+    path('form/delete/', views.form_delete),
 ]

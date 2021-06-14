@@ -20,6 +20,10 @@ def technology_enable(request):
     return render(request, 'technologylist.html')
 
 
+def technology_delete(request):
+    return render(request, 'technologylist.html')
+
+
 class TechnologyListView(ListView):
     paginate_by = 15
     model = TechnologyModel
@@ -48,6 +52,10 @@ def specification_submit(request):
 
 
 def specification_enable(request):
+    return render(request, 'specificationlist.html')
+
+
+def specification_delete(request):
     return render(request, 'specificationlist.html')
 
 

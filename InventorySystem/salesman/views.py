@@ -21,6 +21,10 @@ def enable(request):
     return render(request, 'salesmanlist.html')
 
 
+def delete(request):
+    return render(request, 'salesmanlist.html')
+
+
 class SalesmanListView(ListView):
     paginate_by = 15
     model = SalesmanModel

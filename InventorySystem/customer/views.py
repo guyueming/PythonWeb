@@ -19,7 +19,11 @@ def submit(request):
 
 
 def enable(request):
-    return render(request, 'customer.html')
+    return render(request, 'customerlist.html')
+
+
+def delete(request):
+    return render(request, 'customerlist.html')
 
 
 class CustomerListView(ListView):

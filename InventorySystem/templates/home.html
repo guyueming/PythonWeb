@@ -1,47 +1,44 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div id="main">
-        <section class="el-container" style="height: 795px;">
-            <aside class="el-aside menu" style="width: auto;">
-                <div class="logo-wrap">
-                    <div class="left">
-                        <span>库存系统</span>
-                    </div>
+<div id="main">
+    <section class="el-container" style="height: 795px;">
+        <aside class="el-aside menu" style="width: auto;">
+            <div class="logo-wrap">
+                <div class="left">
+                    <span>库存系统</span>
                 </div>
-                <ul role="menubar" class="el-menu">
-                    <div class="el-menu-item">
-                        {% for func in func_list %}
-                        <li><a href={{ func.1 }}>{{ func.0 }}</a></li>
-                        {% endfor %}
-                    </div>
-                </ul>
-            </aside>
-            <section class="el-container is-vertical">
-                <header class="el-header navbar" style="height: auto; font-size: 12px; padding: 10px;">
+            </div>
+            <ul role="menu" class="el-menu">
+                <div class="el-menu">
+                    {% for func in func_list %}
+                    <li role="menuitem" class="el-menu-item" style="padding-left: 40px;">
+                        <a href={{ func.1 }}>{{ func.0 }}</a>
+                    </li>
+                    {% endfor %}
+                </div>
+            </ul>
+        </aside>
+        <section class="el-container is-vertical">
+            <header class="el-header navbar" style="height: auto; font-size: 12px; padding: 10px;">
                 <div class="float-wrap">
                     <div class="right">
                         <div class="el-dropdown">
-                            <button type="button" class="el-button el-button--default waves-effect el-dropdown-selfdefine" aria-haspopup="list" aria-controls="dropdown-menu-6544" role="button" tabindex="0">
-                            <span><i class="fas fa-user"></i>demo<i class="el-icon-arrow-down el-icon--right"></i></span>
+                            <button type="button"
+                                    class="el-button el-button--default waves-effect el-dropdown-selfdefine"
+                                    aria-haspopup="list" aria-controls="dropdown-menu-6544" role="button" tabindex="0">
+                                <span><i class="fas fa-user"></i>demo<i
+                                        class="el-icon-arrow-down el-icon--right"></i></span>
                             </button>
                         </div>
                     </div>
                 </div>
-                </header>
-                <main class="el-main">
-                    <div class="el-tabs el-tabs--top el-tabs--border-card" style="height: 100%;">
-                        <div class="el-tabs__content">
-                            <div role="tabpanel" id="pane-1002" aria-labelledby="tab-1002" class="el-tab-pane">
-                                <div class="iframe-wrap">
-                                    {% block list %}
-                                    {% endblock %}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </main>
-            </section>
+            </header>
+            <main>
+                {% block list %}
+                {% endblock %}
+            </main>
         </section>
-    </div><!-- #primary -->
+    </section>
+</div><!-- #primary -->
 {% endblock %}

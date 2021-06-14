@@ -1,13 +1,17 @@
-{% extends 'home.html' %}
+{% extends 'form.html' %}
 
-{% block list %}
-<form method="post" action="/home/paper/submit/">
+{% block form %}
+<form method="post" action="/home/paper/submit/" class="basic-grey">
     {% csrf_token %}
-    <h2>纸张</h2>
-    <a>名称：<input type="text" name="name"/></a><br>
-    <a>型号：<input type="text" name="type"/></a><br>
-    <a>厂家：<input type="text" name="factory"/></a><br>
-    <a>备注：<input type="text" name="note"/></a><br>
-    <input type="submit" value="提交">
+    <h1>纸张</h1>
+    <label><span>名称：</span><input type="text" name="name"/></label>
+    <label><span>型号：</span><input type="text" name="type"/></label>
+    <label><span>花色：</span><input type="text" name="color"/></label>
+    <label><span>厂家：</span><input type="text" name="factory"/></label>
+    <label><span>备注：</span><input type="text" name="note"/></label>
+    <label>
+        <span></span>
+        <input type="submit" value="提交">
+    </label>
 </form>
 {% endblock%}

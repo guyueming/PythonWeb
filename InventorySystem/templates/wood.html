@@ -1,11 +1,21 @@
-{% extends 'home.html' %}
+{% extends 'form.html' %}
 
-{% block list %}
-<form method="post" action="/home/wood/submit/">
+{% block form %}
+<form method="post" action="/home/wood/submit/" class="basic-grey">
     {% csrf_token %}
-    <h2>木料</h2>
-    <a>名称：<input type="text" name="name"/></a><br>
-    <a>备注：<input type="text" name="note"/></a><br>
-    <input type="submit" value="提交">
+    <h1>木料</h1>
+    <label><span>名称：</span><input type="text" name="name"/></label><br>
+    <label>
+        <span>面数：</span>
+        <select name="surface">
+            <option value=1>1</option>
+            <option value=2>2</option>
+        </select>
+    </label>
+    <label><span>备注：</span><input type="text" name="note"/></label><br>
+    <label>
+        <span>&nbsp;</span>
+        <input type="submit" value="提交" class="button">
+    </label>
 </form>
 {% endblock%}

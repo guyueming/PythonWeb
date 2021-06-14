@@ -10,5 +10,6 @@ def nav_list(request):
     func_list.append(['销售', '/home/salesman/list'])
     func_list.append(('钢板工艺', '/home/process/technology/list'))
     func_list.append(('规格', '/home/process/specification/list'))
-
     return locals()
+
+

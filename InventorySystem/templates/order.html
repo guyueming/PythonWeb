@@ -1,88 +1,87 @@
-{% extends 'home.html' %}
+{% extends 'form.html' %}
 
-{% block list %}
-<form method="post" action="/home/wood/form/submit/">
+{% block form %}
+<form method="post" action="/home/order/submit/" class="basic-grey">
     {% csrf_token %}
-    <a>下单时间： <input type="date" name="time" value="2021-05-24"/></a><br>
-    <a>交货时间： <input type="date" name="time" value="2021-05-24"/></a><br>
-    <a>销售员：
-        <label>
-            <select name="salesman">
-                {% for m in salesman_list %}
-                <option value={{ m.id }}>{{ m.name }}</option>
-                {%endfor%}
-            </select>
-        </label>
-    </a><br>
-    <a>厂家：
-        <label>
-            <select name="wood">
-                {% for m in customer_list %}
-                <option value={{ m.id }}>{{ m.name }}</option>
-                {%endfor%}
-            </select>
-        </label>
-    </a><br>
-    <a>订单数量：<input type="number" name="count" onkeyup="value=value.replace(/[^\d]/g,'')"/></a><br>
-    <a>木料：
-        <label>
-            <select name="wood">
-                {% for m in wood_list %}
-                <option value={{ m.id }}>{{ m.name }}</option>
-                {%endfor%}
-            </select>
-        </label>
-    </a>
-    <a>数量：<input type="number" name="count" onkeyup="value=value.replace(/[^\d]/g,'')"/></a><br>
+    <h1>订单</h1>
+    <label><span>下单时间：</span> <input type="date" name="order_time" value=""/></label><br>
+    <label><span>交货时间：</span> <input type="date" name="delivery_time" value=""/></label><br>
+    <label><span>销售员：</span>
+        <select name="salesman">
+            {% for m in salesman_list %}
+            <option value={{ m.id }}>{{ m.name }}</option>
+            {%endfor%}
+        </select>
+    </label>
+    <label>
+        <span>厂家：</span>
+        <select name="customer">
+            {% for m in customer_list %}
+            <option value={{ m.id }}>{{ m.name }}</option>
+            {%endfor%}
+        </select>
+    </label>
+    <label>
+        <span>订单数量：</span>
+        <input type="text" name="count" onkeyup="value=value.replace(/[^\d]/g,'')"/>
+    </label>
+    <label><span>木料：</span>
+        <select name="wood">
+            {% for m in wood_list %}
+            <option value={{ m.id }}>{{ m.name }}</option>
+            {%endfor%}
+        </select>
+    </label>
+    <label><span>数量：</span><input type="number" name="wood_count"
+                                  onkeyup="value=value.replace(/[^\d]/g,'')"/></label><br>
 
-    <a>桉木皮：
-        <label>
-            <select name="skin">
-                {% for m in skin_list %}
-                <option value={{ m.id }}>{{ m.name }}</option>
-                {%endfor%}
-            </select>
-        </label>
-    </a>
-    <a>数量：<input type="number" name="count" onkeyup="value=value.replace(/[^\d]/g,'')"/></a><br>
+    <label><span>桉木皮：</span>
+        <select name="skin">
+            {% for m in skin_list %}
+            <option value={{ m.id }}>{{ m.name }}</option>
+            {%endfor%}
+        </select>
+    </label>
+    <label><span>数量：</span><input type="number" name="skin_count"
+                                  onkeyup="value=value.replace(/[^\d]/g,'')"/></label><br>
 
-    <a>纸张：
-        <label>
-            <select name="paper">
-                {% for m in paper_list %}
-                <option value={{ m.id }}>{{ m.name }}</option>
-                {%endfor%}
-            </select>
-        </label>
-    </a>
-    <a>数量：<input type="number" name="count" onkeyup="value=value.replace(/[^\d]/g,'')"/></a><br>
-    <a>钢板工艺：
-        <label>
-            <select name="technology">
-                {% for m in technology_list %}
-                <option value={{ m.id }}>{{ m.name }}</option>
-                {%endfor%}
-            </select>
-        </label>
-    </a><br>
-    <a>规格：
-        <label>
-            <select name="specification">
-                {% for m in specification_list %}
-                <option value={{ m.id }}>{{ m.name }}</option>
-                {%endfor%}
-            </select>
-        </label>
-    </a><br>
-    <a>花色：<input type="text" name="complete" value=""/></a><br>
-    <a>包装：<input type="text" name="complete" value=""/></a><br>
-    <a>厚度：<input type="text" name="complete" value=""/></a><br>
-    <a>商标：<input type="text" name="complete" value=""/></a><br>
-    <a>打字：<input type="text" name="complete" value=""/></a><br>
-    <a>是否开槽：<input type="checkbox" name="complete" value="True"/></a>
-    <a>是否烘干：<input type="checkbox" name="complete" value="True"/></a><br>
-    <a>备注：<input type="text" name="complete" value=""/></a><br>
-    <a>确认：<input type="checkbox" name="complete" value=""/></a><br>
-    <input type="submit" value="提交">
+    <label><span>纸张：</span>
+        <select name="paper">
+            {% for m in paper_list %}
+            <option value={{ m.id }}>{{ m.name }}</option>
+            {%endfor%}
+        </select>
+    </label>
+    <label><span>数量：</span>
+        <input type="number" name="paper_count" onkeyup="value=value.replace(/[^\d]/g,'')"/>
+    </label><br>
+    <label><span>钢板工艺：</span>
+        <select name="technology">
+            {% for m in technology_list %}
+            <option value={{ m.id }}>{{ m.name }}</option>
+            {%endfor%}
+        </select>
+    </label>
+    <label><span>规格：</span>
+        <select name="specification">
+            {% for m in specification_list %}
+            <option value={{ m.id }}>{{ m.name }}</option>
+            {%endfor%}
+        </select>
+    </label>
+    <label><span>花色：</span><input type="text" name="color" value=""/></label>
+    <label><span>包装：</span><input type="text" name="package" value=""/></label>
+    <label><span>厚度：</span><input type="text" name="thickness" value=""/></label>
+    <label><span>商标：</span><input type="text" name="trademark" value=""/></label>
+    <label><span>打字：</span><input type="text" name="word" value=""/></label>
+    <label><span>是否开槽：</span><input type="checkbox" name="grooving" value="True"/></label><br>
+    <label><span>是否烘干：</span><input type="checkbox" name="drying" value="True"/></label><br>
+    <label><span>备注：</span><input type="text" name="note" value=""/></label>
+    <label><span>确认：</span><input type="checkbox" name="sure" value="True"/></label><br>
+    <label>
+        <span>&nbsp;</span>
+        <input type="submit" value="提交">
+    </label>
+
 </form>
 {% endblock%}

@@ -1,8 +1,7 @@
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from wood.models import WoodModel
-from account.models import FORM_TYPE
-from order.models import OrderModel, WoodFormModel
+from order.models import FORM_TYPE, WoodFormModel
 from django.views.generic import ListView
 
 
@@ -59,24 +58,24 @@ def form_submit(request):
     complete = request.POST.get('complete')
     note = request.POST.get('note')
     wood = WoodModel.objects.get(id=wood_id)
-    dic = {"arrive_time": time, "name": wood, "count": count, "type": form_type, "note": note}
+    dic = {"arrive_date": time, "name": wood, "count": count, "type": form_type, "note": note}
     if complete:
         dic["sure"] = complete
-        update(wood_id, count, form_type == 1)
+        sync_count(wood_id, count, form_type == 1)
     WoodFormModel.objects.create(**dic)
     return HttpResponseRedirect('/home/wood/form/list/')
 
 
-def update(wood_id, wood_count, state):
-    wood = WoodModel.objects.get(id=wood_id)
-    if state:
-        WoodModel.objects.filter(id=wood_id).update(count=(wood_count + wood.count))
-    else:
-        WoodModel.objects.filter(id=wood_id).update(count=(wood.count - wood_count))
+def form_sure(request):
+    return render(request, 'woodformlist.html')
 
 
 def form_complete(request):
-    return render(request, 'woodform.html')
+    return render(request, 'woodformlist.html')
+
+
+def form_delete(request):
+    return render(request, 'woodformlist.html')
 
 
 class WoodFormListView(ListView):
@@ -97,3 +96,9 @@ class WoodFormListView(ListView):
         return context
 
 
+def sync_count(mid, count, state):
+    obj = WoodModel.objects.get(id=mid)
+    if state:
+        WoodModel.objects.filter(id=mid).update(count=(obj.count + count))
+    else:
+        WoodModel.objects.filter(id=mid).update(count=(obj.count - count))
