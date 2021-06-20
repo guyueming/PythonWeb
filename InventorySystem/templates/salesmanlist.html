@@ -1,41 +1,49 @@
 {% extends 'table.html' %}
 
 {% block table %}
-<div id="toolbar">
-    <div class="right">
-        <a href="/home/salesman/add">
-            <button type="button" class="el-button el-button--primary el-button--small">
-                <span>新增</span>
-            </button>
-        </a>
+<div>
+    <div class="top_tool_bar">
+        <div class="right_buttons">
+            <a href="/home/salesman/add">
+                <button type="button">
+                    <span>新增</span>
+                </button>
+            </a>
+        </div>
     </div>
-</div>
-<div class="results">
-    <table id="result_list">
-        <tr>
-            <th scope="col" class="sortable column-id">序号</th>
-            <th scope="col" class="sortable column-name">名字</th>
-            <th scope="col" class="sortable column-name">电话</th>
-            <th scope="col" class="sortable column-name">备注</th>
-            <th scope="col">状态</th>
-            <th scope="col">操作</th>
-        </tr>
-        {% for obj in object_list %}
-        <tr>
-            <td>{{obj.id}}</td>
-            <td>{{obj.name}}</td>
-            <td>{{obj.phone}}</td>
-            <td>{{obj.note}}</td>
-            <td>
-                <a>停用<input type="checkbox" checked={{ obj.enable }}></a></td>
-            </td>
-            <td>
-                <a href="/home/wood/form/del">
-                    <input type="button" value="删除">
-                </a>
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
+    <div class="results">
+        <table id="result_list">
+            <tr>
+                <th scope="col" class="sortable column-id">序号</th>
+                <th scope="col" class="sortable column-name">名字</th>
+                <th scope="col" class="sortable column-name">电话</th>
+                <th scope="col" class="sortable column-name">备注</th>
+                <th scope="col">状态</th>
+                <th scope="col">操作</th>
+            </tr>
+            {% for obj in object_list %}
+            <tr>
+                <td>{{obj.id}}</td>
+                <td>{{obj.name}}</td>
+                <td>{{obj.phone}}</td>
+                <td>{{obj.note}}</td>
+                <td>
+                    <a href="/home/salesman/enable?id={{ obj.id }}">
+                        {% if obj.enable %}
+                        <input type="button" value="停用">
+                        {% else %}
+                        <input type="button" value="已停用">
+                        {% endif %}
+                    </a>
+                </td>
+                <td>
+                    <a href="/home/salesman/del?id={{ obj.id }}">
+                        <input type="button" value="删除">
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
 </div>
 {% endblock %}

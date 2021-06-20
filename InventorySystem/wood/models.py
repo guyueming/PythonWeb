@@ -4,8 +4,9 @@ from django.utils.timezone import now
 
 class WoodModel(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.TextField('名称', max_length=64)
-    surface = models.IntegerField('贴皮数', default=0)
+    name = models.TextField('名称', max_length=64, unique=False, null=False)
+    surface = models.IntegerField('贴皮数', default=1)
+    factory = models.TextField('厂家', max_length=64, default="")
     count = models.IntegerField('数量', default=0)
     note = models.TextField('备注', max_length=256, default='')
     enable = models.BooleanField(

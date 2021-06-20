@@ -1,24 +1,23 @@
 {% extends 'table.html' %}
 
 {% block table %}
-<div class="module" id="changelist">
-    <div id="toolbar">
-        <form id="changelist-search" method="get">
+<div>
+    <div class="top_tool_bar">
+        <form method="get">
             {% csrf_token %}
-            <input type="text" autocomplete="off" name="q" placeholder="搜索标题" class="el-input__inner"
-                   style="width:200px">
-            <button type="submit" class="el-button el-button--primary el-button--small">
+            <input type="text" name="q" placeholder="搜索名称">
+            <button type="submit">
                 <span>搜索</span>
             </button>
         </form>
-        <div class="right">
+        <div class="right_buttons">
             <a href="/home/skin/add">
-                <button type="button" class="el-button el-button--primary el-button--small">
+                <button type="button">
                     <span>新增</span>
                 </button>
             </a>
             <a href="/home/skin/form/list">
-                <button type="button" class="el-button el-button--primary el-button--small">
+                <button type="button">
                     <span>出入单</span>
                 </button>
             </a>
@@ -29,27 +28,35 @@
             <thead>
             <th scope="col" class="sortable column-id">序号</th>
             <th scope="col" class="sortable column-name">名称</th>
+            <th scope="col" class="sortable column-name">厂家</th>
             <th scope="col" class="sortable column-name">数量</th>
             <th scope="col" class="sortable column-name">备注</th>
             <th scope="col">状态</th>
             <th scope="col">操作</th>
             </thead>
-            {% for object in object_list %}
+            {% for obj in object_list %}
             <tr>
-                <td>{{object.id}}</td>
-                <td>{{object.name}}</td>
-                <td>{{object.count}}</td>
-                <td>{{object.note}}</td>
+                <td>{{obj.id}}</td>
+                <td>{{obj.name}}</td>
+                <td>{{obj.factory}}</td>
+                <td>{{obj.count}}</td>
+                <td>{{obj.note}}</td>
                 <td>
-                    <a>停用<input type="checkbox" checked={{ obj.enable }}></a></td>
+                    <a href="/home/skin/enable?id={{ obj.id }}">
+                        {% if obj.enable %}
+                        <input type="button" value="停用">
+                        {% else %}
+                        <input type="button" value="已停用">
+                        {% endif %}
+                    </a>
                 <td>
-                    <a href="/home/skin/form/list">
+                    <a href="/home/skin/form/list?id={{ obj.id }}">
                         <input type="button" value="使用详情">
                     </a>
-                    <a href="/home/skin/form/add">
+                    <a href="/home/skin/form/add?id={{ obj.id }}">
                         <input type="button" value="新增订单">
                     </a>
-                    <a href="/home/skin/form/delete">
+                    <a href="/home/skin/del?id={{ obj.id }}">
                         <input type="button" value="删除">
                     </a>
                 </td>

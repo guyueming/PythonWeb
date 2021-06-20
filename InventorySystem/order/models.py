@@ -17,11 +17,16 @@ FORM_TYPE = (
 )
 
 
-class OrderModel(models.Model):
+class OrderNumberModel(models.Model):
+    order_date = models.DateField('下单时间', default=now)
+    order_number = models.IntegerField('订单编号', default=0)
+
+
+class OrderHeadModel(models.Model):
     id = models.AutoField(primary_key=True)
+    order_number = models.IntegerField('订单编号', default=0)
     order_date = models.DateField('下单时间', default=now)
     delivery_date = models.DateField('交货时间', default=now)
-    count = models.IntegerField('数量', default=0)
     salesman = models.ForeignKey(
         SalesmanModel,
         verbose_name='销售员',
@@ -29,6 +34,23 @@ class OrderModel(models.Model):
     customer = models.ForeignKey(
         CustomerModel,
         verbose_name='厂家',
+        on_delete=models.PROTECT, null=True)
+    complete = models.BooleanField(
+        '是否完成', default=False, blank=False, null=False)
+    note = models.TextField('备注', max_length=256, default='')
+    user = models.ForeignKey(
+        User,
+        verbose_name='作者',
+        on_delete=models.PROTECT, null=True)
+    created_time = models.DateTimeField('创建时间', default=now)
+    last_mod_time = models.DateTimeField('修改时间', auto_now=True)
+
+
+class OrderModel(models.Model):
+    id = models.AutoField(primary_key=True)
+    head_number = models.ForeignKey(
+        OrderHeadModel,
+        verbose_name='订单编号',
         on_delete=models.PROTECT, null=True)
     wood = models.ForeignKey(
         WoodModel,
@@ -38,14 +60,19 @@ class OrderModel(models.Model):
     skin = models.ForeignKey(
         SkinModel,
         verbose_name='桉木皮',
-        on_delete=models.PROTECT)
+        on_delete=models.PROTECT, null=True)
     skinCount = models.IntegerField('桉木皮数量', default=0)
     paper = models.ForeignKey(
         PaperModel,
-        verbose_name='纸张',
-        on_delete=models.PROTECT)
+        verbose_name='纸张1',
+        on_delete=models.PROTECT, null=True)
     paperCount = models.IntegerField('纸张数量', default=0)
-    color = models.TextField('花色', max_length=64)
+    other_paper = models.ForeignKey(
+        PaperModel,
+        verbose_name='纸张2',
+        related_name='other_paper',
+        on_delete=models.PROTECT, null=True)
+    other_paper_count = models.IntegerField('纸张数量', default=0)
     technology = models.ForeignKey(
         TechnologyModel,
         verbose_name='钢板工艺',
@@ -64,8 +91,6 @@ class OrderModel(models.Model):
         '是否烘干', default=False, blank=False, null=False)
     sure = models.BooleanField(
         '是否确认', default=False, blank=False, null=False)
-    complete = models.BooleanField(
-        '是否完成', default=False, blank=False, null=False)
     note = models.TextField('备注', max_length=256, default='')
     user = models.ForeignKey(
         User,

@@ -1,63 +1,72 @@
 {% extends 'table.html' %}
 
 {% block table %}
-<div id="toolbar">
-    <form id="changelist-search" method="get">
-        {% csrf_token %}
-        <input type="text" autocomplete="off" name="q" placeholder="搜索标题" class="el-input__inner"
-               style="width:200px">
-        <button type="submit" class="el-button el-button--primary el-button--small">
-            <span>搜索</span>
-        </button>
-    </form>
-    <div class="right">
-        <a href="/home/paper/add">
-            <button type="button" class="el-button el-button--primary el-button--small">
-                <span>新增</span>
+<div>
+    <div class="top_tool_bar">
+        <form method="get">
+            {% csrf_token %}
+            <input type="text" name="q" placeholder="搜索型号">
+            <button type="submit">
+                <span>搜索</span>
             </button>
-        </a>
-        <a href="/home/paper/form/list">
-            <button type="button" class="el-button el-button--primary el-button--small">
-                <span>出入单</span>
-            </button>
-        </a>
+        </form>
+        <div class="right_buttons">
+            <a href="/home/paper/add">
+                <button type="button">
+                    <span>新增</span>
+                </button>
+            </a>
+            <a href="/home/paper/form/list">
+                <button type="button">
+                    <span>出入单</span>
+                </button>
+            </a>
+        </div>
     </div>
-</div>
-<div class="results">
-    <table id="result_list">
-        <tr>
-            <th scope="col" class="sortable column-id">序号</th>
-            <th scope="col" class="sortable column-name">名称</th>
-            <th scope="col" class="sortable column-name">型号</th>
-            <th scope="col" class="sortable column-name">厂家</th>
-            <th scope="col" class="sortable column-name">数量</th>
-            <th scope="col" class="sortable column-name">备注</th>
-            <th scope="col">状态</th>
-            <th scope="col">操作</th>
-        </tr>
-        {% for obj in object_list %}
-        <tr>
-            <td>{{obj.id}}</td>
-            <td>{{obj.name}}</td>
-            <td>{{obj.type}}</td>
-            <td>{{obj.factory}}</td>
-            <td>{{obj.count}}</td>
-            <td>{{obj.note}}</td>
-            <td>
-                <a>停用<input type="checkbox" checked={{ obj.enable }}></a></td>
-            <td>
-                <a href="/home/paper/form/list">
-                    <input type="button" value="使用详情">
-                </a>
-                <a href="/home/paper/form/add">
-                    <input type="button" value="新增订单">
-                </a>
-                <a href="/home/paper/form/delete">
-                    <input type="button" value="删除">
-                </a>
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
+    <div class="results">
+        <table id="result_list">
+            <tr>
+                <th scope="col" class="sortable column-id">序号</th>
+                <th scope="col" class="sortable column-name">名称</th>
+                <th scope="col" class="sortable column-name">花色</th>
+                <th scope="col" class="sortable column-name">型号</th>
+                <th scope="col" class="sortable column-name">厂家</th>
+                <th scope="col" class="sortable column-name">数量</th>
+                <th scope="col" class="sortable column-name">备注</th>
+                <th scope="col">状态</th>
+                <th scope="col">操作</th>
+            </tr>
+            {% for obj in object_list %}
+            <tr>
+                <td>{{obj.id}}</td>
+                <td>{{obj.name}}</td>
+                <td>{{obj.color}}</td>
+                <td>{{obj.type}}</td>
+                <td>{{obj.factory}}</td>
+                <td>{{obj.count}}</td>
+                <td>{{obj.note}}</td>
+                <td>
+                    <a href="/home/paper/enable?id={{ obj.id }}">
+                        {% if obj.enable %}
+                        <input type="button" value="停用">
+                        {% else %}
+                        <input type="button" value="已停用">
+                        {% endif %}
+                    </a>
+                <td>
+                    <a href="/home/paper/form/list?id={{ obj.id }}">
+                        <input type="button" value="使用详情">
+                    </a>
+                    <a href="/home/paper/form/add?id={{ obj.id }}">
+                        <input type="button" value="新增订单">
+                    </a>
+                    <a href="/home/paper/del?id={{ obj.id }}">
+                        <input type="button" value="删除">
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
 </div>
 {% endblock %}

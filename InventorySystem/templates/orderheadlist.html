@@ -1,0 +1,67 @@
+{% extends 'table.html' %}
+
+{% block table %}
+<div>
+    <div class="top_tool_bar">
+        <form method="get">
+            {% csrf_token %}
+            <input type="text" name="q" placeholder="销售员">
+            <button type="submit">
+                <span>搜索</span>
+            </button>
+        </form>
+        <div class="right_buttons">
+            <a href="/home/order/add">
+                <button type="button">
+                    <span>新增</span>
+                </button>
+            </a>
+            <a href="/home/order/adds">
+                <button type="button">
+                    <span>新增订单</span>
+                </button>
+            </a>
+        </div>
+    </div>
+    <div class="results" style="overflow:scroll;">
+        <table id="result_list">
+            <tr>
+                <th scope="col" class="sortable column-id">序号</th>
+                <th scope="col" class="sortable column-id">订单编号</th>
+                <th scope="col" class="sortable column-name">下单时间</th>
+                <th scope="col" class="sortable column-name">销售</th>
+                <th scope="col" class="sortable column-name">客户</th>
+                <th scope="col" class="sortable column-name">交货时间</th>
+                <th scope="col" class="sortable column-name">备注</th>
+                <th scope="col">状态</th>
+                <th scope="col">操作</th>
+            </tr>
+            {% for form in object_list %}
+            <tr>
+                <td>{{ form.id }}</td>
+                <td>{{ form.order_number }}</td>
+                <td>{{ form.order_date }}</td>
+                <td>{{ form.salesman.name }}</td>
+                <td>{{ form.customer.name }}</td>
+                <td>{{ form.delivery_date }}</td>
+                <td>{{ form.note }}</td>
+                <td>
+                    <a href="/home/order/head/complete?id={{ form.id }}">
+                        {% if form.complete %}
+                        <input type="button" value="已确认">
+                        {% else %}
+                        <input type="button" value="确认">
+                        {% endif %}
+                    </a>
+                </td>
+                <td>
+                    <a href="/home/order/head/del?id={{ form.id }}">
+                        <input type="button" value="删除">
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+{% endblock %}

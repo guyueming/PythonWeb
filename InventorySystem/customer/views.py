@@ -2,6 +2,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from .models import CustomerModel
 from django.views.generic import ListView
+from django.contrib import messages
 
 
 def add(request):
@@ -19,11 +20,20 @@ def submit(request):
 
 
 def enable(request):
-    return render(request, 'customerlist.html')
+    obj_id = request.GET.get('id')
+    obj = CustomerModel.objects.get(id=obj_id)
+    obj.enable = not obj.enable
+    obj.save()
+    return HttpResponseRedirect('/home/customer/list/')
 
 
 def delete(request):
-    return render(request, 'customerlist.html')
+    obj_id = request.GET.get('id')
+    try:
+        CustomerModel.objects.filter(id=obj_id).delete()
+    except Exception as e:
+        messages.success(request, e.args)
+    return HttpResponseRedirect('/home/customer/list/')
 
 
 class CustomerListView(ListView):

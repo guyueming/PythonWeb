@@ -1,92 +1,107 @@
 {% extends 'table.html' %}
 
 {% block table %}
-<div style="display:flex;">
-    <form method="get">
-        {% csrf_token %}
-        <input type="text" autocomplete="off" name="q" placeholder="销售员" class="el-input__inner"
-               style="width:200px">
-        <button type="submit" class="func_button">
-            <span>搜索</span>
-        </button>
-    </form>
-    <div style="float:right">
-        <a href="/home/order/add">
-            <button type="button" class="func_button">
-                <span>新增</span>
+<div>
+    <div class="top_tool_bar">
+        <form method="get">
+            {% csrf_token %}
+            <input type="text" name="q" placeholder="销售员">
+            <button type="submit">
+                <span>搜索</span>
             </button>
-        </a>
+        </form>
+        <div class="right_buttons">
+            <a href="/home/order/add">
+                <button type="button">
+                    <span>新增</span>
+                </button>
+            </a>
+            <a href="/home/order/adds">
+                <button type="button">
+                    <span>新增订单</span>
+                </button>
+            </a>
+        </div>
     </div>
-</div>
-<div class="results" style="overflow:scroll;">
-    <table id="result_list">
-        <tr>
-            <th scope="col" class="sortable column-id">序号</th>
-            <th scope="col" class="sortable column-name">下单时间</th>
-<!--            <th scope="col" class="sortable column-name">交货时间</th>-->
-            <th scope="col" class="sortable column-name">数量</th>
-            <th scope="col" class="sortable column-name">销售</th>
-            <th scope="col" class="sortable column-name">客户</th>
-            <th scope="col" class="sortable column-name">木料</th>
-            <th scope="col" class="sortable column-name">桉木皮</th>
-            <th scope="col" class="sortable column-name">纸张</th>
-            <th scope="col" class="sortable column-name">规格</th>
-            <th scope="col" class="sortable column-name">钢板工艺</th>
-            <th scope="col" class="sortable column-name">花色</th>
-            <th scope="col" class="sortable column-name">包装</th>
-            <th scope="col" class="sortable column-name">厚度</th>
-            <th scope="col" class="sortable column-name">打字</th>
-            <th scope="col" class="sortable column-name">商标</th>
-            <th scope="col" class="sortable column-name">是否开槽</th>
-            <th scope="col" class="sortable column-name">是否烘干</th>
-            <th scope="col" class="sortable column-name">备注</th>
-            <th scope="col">状态</th>
-            <th scope="col">操作</th>
-        </tr>
-        {% for form in object_list %}
-        <tr>
-            <td>{{form.id}}</td>
-            <td>{{form.order_date}}</td>
-<!--            <td>{{form.delivery_date}}</td>-->
-            <td>{{form.count}}</td>
-            <td>{{form.salesman.name}}</td>
-            <td>{{form.customer.name}}</td>
-            <td>{{ form.wood.name }}<br>{{ form.woodCount }}</td>
-            <td>{{ form.skin.name }}<br>{{ form.skinCount }}</td>
-            <td>{{ form.paper.name }}<br>{{ form.paperCount }}</td>
-            <td>{{form.technology.name}}</td>
-            <td>{{form.specifications.name}}</td>
-            <td>{{form.color}}</td>
-            <td>{{form.packaging}}</td>
-            <td>{{form.thickness}}</td>
-            <td>{{form.trademark}}</td>
-            <td>{{form.word}}</td>
-            <td>
-                {% if form.is_grooving %}
-                是
-                {% else %}
-                否
-                {% endif %}
-            </td>
-            <td>
-                {% if form.is_drying %}
-                是
-                {% else %}
-                否
-                {% endif %}
-            </td>
-            <td>{{form.note}}</td>
-            <td>
-                <a>确认<input type="checkbox"></a>
-                <a>完成<input type="checkbox"></a>
-            </td>
-            <td>
-                <a href="/home/wood/form/del">
-                    <input type="button" value="删除">
-                </a>
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
+    <div class="results" style="overflow:scroll;">
+        <table id="result_list">
+            <tr>
+                <th scope="col" class="sortable column-id">序号</th>
+                <th scope="col" class="sortable column-id">订单编号</th>
+                <th scope="col" class="sortable column-name">下单时间</th>
+                <th scope="col" class="sortable column-name">销售</th>
+                <th scope="col" class="sortable column-name">客户</th>
+                <th scope="col" class="sortable column-name">木料</th>
+                <th scope="col" class="sortable column-name">数量</th>
+                <th scope="col" class="sortable column-name">桉木皮</th>
+                <th scope="col" class="sortable column-name">纸张</th>
+                <th scope="col" class="sortable column-name">规格</th>
+                <th scope="col" class="sortable column-name">钢板工艺</th>
+                <th scope="col" class="sortable column-name">包装</th>
+                <th scope="col" class="sortable column-name">厚度</th>
+                <th scope="col" class="sortable column-name">打字</th>
+                <th scope="col" class="sortable column-name">商标</th>
+                <th scope="col" class="sortable column-name">开槽</th>
+                <th scope="col" class="sortable column-name">烘干</th>
+                <th scope="col" class="sortable column-name">交货时间</th>
+                <th scope="col" class="sortable column-name">备注</th>
+                <th scope="col">状态</th>
+                <th scope="col">操作</th>
+            </tr>
+            {% for form in object_list %}
+            <tr>
+                <td>{{ form.id }}</td>
+                <td>{{ form.head_number.order_number }}</td>
+                <td>{{ form.head_number.order_date }}</td>
+                <td>{{ form.head_number.salesman.name }}</td>
+                <td>{{ form.head_number.customer.name }}</td>
+                <td>{{ form.wood.name }}</td>
+                <td>{{ form.woodCount }}</td>
+                <td>{{ form.skin.name }}({{ form.skinCount }})</td>
+                <td>{{ form.paper.name }}({{ form.paperCount }})
+                    {% if form.other_paper %}
+                    <br> {{ form.other_paper.name }}({{ form.other_paper_count }})
+                    {% endif %}
+                </td>
+                <td>{{form.technology.name}}</td>
+                <td>{{form.specifications.name}}</td>
+                <td>{{form.packaging}}</td>
+                <td>{{form.thickness}}</td>
+                <td>{{form.trademark}}</td>
+                <td>{{form.word}}</td>
+                <td>
+                    {% if form.is_grooving %}
+                    是
+                    {% else %}
+                    否
+                    {% endif %}
+                </td>
+                <td>
+                    {% if form.is_drying %}
+                    是
+                    {% else %}
+                    否
+                    {% endif %}
+                </td>
+                <td>{{form.head_number.delivery_date}}</td>
+                <td>{{form.note}}</td>
+                <td>
+                    <a href="/home/order/sure?id={{ form.id }}">
+                        {% if form.sure %}
+                        <input type="button" value="已确认">
+                        {% else %}
+                        <input type="button" value="确认">
+                        {% endif %}
+                    </a>
+                </td>
+                <td>
+                    <a href="/home/order/del?id={{ form.id }}">
+                        <input type="button" value="删除">
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
 </div>
 {% endblock %}

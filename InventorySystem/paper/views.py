@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from .models import PaperModel
@@ -11,20 +12,30 @@ def add(request):
 
 def submit(request):
     name = request.POST.get('name')
-    m_type = request.POST.get('type')
+    model = request.POST.get('model')
     factory = request.POST.get('factory')
+    color = request.POST.get('color')
     note = request.POST.get('note')
-    dic = {"name": name, "type": m_type, "factory": factory, "note": note}
+    dic = {"name": name, "type": model, "factory": factory, "note": note, "color": color}
     PaperModel.objects.create(**dic)
     return HttpResponseRedirect('/home/paper/list/')
 
 
 def enable(request):
-    return render(request, 'paperlist.html')
+    obj_id = request.GET.get('id')
+    obj = PaperModel.objects.get(id=obj_id)
+    obj.enable = not obj.enable
+    obj.save()
+    return HttpResponseRedirect('/home/paper/list/')
 
 
 def delete(request):
-    return render(request, 'paperlist.html')
+    obj_id = request.GET.get('id')
+    try:
+        PaperModel.objects.filter(id=obj_id).delete()
+    except Exception as e:
+        messages.success(request, e.args)
+    return HttpResponseRedirect('/home/paper/list/')
 
 
 class PaperListView(ListView):
@@ -34,7 +45,7 @@ class PaperListView(ListView):
     context_object_name = 'object_list'
 
     def get_queryset(self):
-        return PaperModel.objects.filter(enable=True).order_by('-last_mod_time')
+        return PaperModel.objects.all().order_by('name')
 
     def get_context_data(self, **kwargs):
         context = super(PaperListView, self).get_context_data(**kwargs)
@@ -53,26 +64,51 @@ def form_submit(request):
     mid = request.POST.get('name')
     count = int(request.POST.get('count'))
     form_type = int(request.POST.get('type'))
-    complete = request.POST.get('complete')
     obj = PaperModel.objects.get(id=mid)
-    dic = {"arrive_date": time, "name": obj, "count": count, "type": form_type}
-    if complete:
-        dic["sure"] = complete
-        sync_count(mid, count, form_type == 1)
+    dic = {"arrive_date": time, "name": obj, "count": count, "type": form_type, "sure": True}
     PaperFormModel.objects.create(**dic)
+    sync_count(mid, count, form_type == 1)
     return HttpResponseRedirect('/home/paper/form/list/')
 
 
 def form_sure(request):
-    return render(request, 'paperformlist.html')
+    obj_id = request.GET.get('id')
+    obj = PaperFormModel.objects.get(id=obj_id)
+    obj.sure = not obj.sure
+    if obj.sure:
+        if obj.type == 1:
+            obj.name.count += obj.count
+        else:
+            obj.name.count -= obj.count
+    else:
+        if obj.type == 1:
+            obj.name.count -= obj.count
+        else:
+            obj.name.count += obj.count
+    obj.name.save()
+    obj.save()
+    return HttpResponseRedirect('/home/paper/form/list/')
 
 
 def form_complete(request):
-    return render(request, 'paperformlist.html')
+    obj_id = request.GET.get('id')
+    obj = PaperFormModel.objects.get(id=obj_id)
+    obj.complete = not obj.complete
+    obj.save()
+    return HttpResponseRedirect('/home/paper/form/list/')
 
 
 def form_delete(request):
-    return render(request, 'paperformlist.html')
+    obj_id = request.GET.get('id')
+    form = PaperFormModel.objects.get(id=obj_id)
+    if form.sure:
+        messages.success(request, "请先取消确认")
+    else:
+        try:
+            PaperFormModel.objects.filter(id=obj_id).delete()
+        except Exception as e:
+            messages.success(request, e.args)
+    return HttpResponseRedirect('/home/paper/form/list/')
 
 
 class PaperFormListView(ListView):
@@ -82,7 +118,7 @@ class PaperFormListView(ListView):
     context_object_name = 'object_list'
 
     def get_queryset(self):  # 重写get_queryset方法
-        return PaperFormModel.objects.all().order_by('-last_mod_time')
+        return PaperFormModel.objects.all().order_by('-id')
 
     def get_context_data(self, **kwargs):
         context = super(PaperFormListView, self).get_context_data(**kwargs)

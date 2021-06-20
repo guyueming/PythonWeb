@@ -4,7 +4,7 @@ from django.utils.timezone import now
 
 class CustomerModel(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.TextField('名称', max_length=64, unique=True)
+    name = models.TextField('名称', max_length=64, unique=True, null=False)
     address = models.TextField('地址', max_length=64)
     phone = models.TextField('电话', max_length=64)
     enable = models.BooleanField(

@@ -2,6 +2,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from .models import TechnologyModel, SpecificationModel
 from django.views.generic import ListView
+from django.contrib import messages
 
 
 def technology_add(request):
@@ -17,11 +18,20 @@ def technology_submit(request):
 
 
 def technology_enable(request):
-    return render(request, 'technologylist.html')
+    obj_id = request.GET.get('id')
+    obj = TechnologyModel.objects.get(id=obj_id)
+    obj.enable = not obj.enable
+    obj.save()
+    return HttpResponseRedirect('/home/process/technology/list/')
 
 
 def technology_delete(request):
-    return render(request, 'technologylist.html')
+    obj_id = request.GET.get('id')
+    try:
+        TechnologyModel.objects.filter(id=obj_id).delete()
+    except Exception as e:
+        messages.success(request, e.args)
+    return HttpResponseRedirect('/home/process/technology/list/')
 
 
 class TechnologyListView(ListView):
@@ -52,11 +62,20 @@ def specification_submit(request):
 
 
 def specification_enable(request):
-    return render(request, 'specificationlist.html')
+    obj_id = request.GET.get('id')
+    obj = SpecificationModel.objects.get(id=obj_id)
+    obj.enable = not obj.enable
+    obj.save()
+    return HttpResponseRedirect('/home/process/specification/list/')
 
 
 def specification_delete(request):
-    return render(request, 'specificationlist.html')
+    obj_id = request.GET.get('id')
+    try:
+        SpecificationModel.objects.filter(id=obj_id).delete()
+    except Exception as e:
+        messages.success(request, e.args)
+    return HttpResponseRedirect('/home/process/specification/list/')
 
 
 class SpecificationListView(ListView):

@@ -2,6 +2,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from .models import SalesmanModel
 from django.views.generic import ListView
+from django.contrib import messages
 
 
 def add(request):
@@ -18,11 +19,20 @@ def submit(request):
 
 
 def enable(request):
-    return render(request, 'salesmanlist.html')
+    obj_id = request.GET.get('id')
+    obj = SalesmanModel.objects.get(id=obj_id)
+    obj.enable = not obj.enable
+    obj.save()
+    return HttpResponseRedirect('/home/salesman/list/')
 
 
 def delete(request):
-    return render(request, 'salesmanlist.html')
+    obj_id = request.GET.get('id')
+    try:
+        SalesmanModel.objects.filter(id=obj_id).delete()
+    except Exception as e:
+        messages.success(request, e.args)
+    return HttpResponseRedirect('/home/salesman/list/')
 
 
 class SalesmanListView(ListView):

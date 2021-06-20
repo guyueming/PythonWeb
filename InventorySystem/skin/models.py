@@ -4,7 +4,8 @@ from django.utils.timezone import now
 
 class SkinModel(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.TextField('名称', max_length=64, unique=True)
+    name = models.TextField('名称', max_length=64, unique=True, null=False)
+    factory = models.TextField('厂家', max_length=64, default="")
     count = models.IntegerField('数量', default=0)
     note = models.TextField('备注', max_length=256, default='')
     enable = models.BooleanField(

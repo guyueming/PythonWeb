@@ -4,10 +4,10 @@ from django.utils.timezone import now
 
 class PaperModel(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.TextField('名称', max_length=64, unique=False)
+    name = models.TextField('名称', max_length=64, unique=False, null=False)
     color = models.TextField('花色', max_length=64, default="")
-    type = models.TextField('型号', max_length=64)
-    factory = models.TextField('厂家', max_length=64)
+    type = models.TextField('型号', max_length=64, default="")
+    factory = models.TextField('厂家', max_length=64, default="")
     count = models.IntegerField('数量', default=0)
     note = models.TextField('备注', max_length=256, default='')
     enable = models.BooleanField(

@@ -8,4 +8,5 @@ urlpatterns = [
     path('list/', views.CustomerListView.as_view(), name='customer_list'),
     path('submit/', views.submit),
     path('enable/', views.enable),
+    path('del/', views.delete),
 ]

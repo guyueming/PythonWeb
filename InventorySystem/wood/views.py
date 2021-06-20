@@ -1,3 +1,5 @@
+from django.contrib import messages
+from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from wood.models import WoodModel
@@ -11,22 +13,29 @@ def add(request):
 
 def submit(request):
     name = request.POST.get('name')
+    surface = request.POST.get('surface')
     note = request.POST.get('note')
-    dic = {"name": name, "note": note}
+    factory = request.POST.get('factory')
+    dic = {"name": name, "surface": surface, "note": note, "factory": factory}
     WoodModel.objects.create(**dic)
     return HttpResponseRedirect('/home/wood/list/')
 
 
 def enable(request):
-    mid = request.POST.get('id')
-    WoodModel.objects.filter(id=mid).update()
+    obj_id = request.GET.get('id')
+    obj = WoodModel.objects.get(id=obj_id)
+    obj.enable = not obj.enable
+    obj.save()
     return HttpResponseRedirect('/home/wood/list/')
 
 
 def delete(request):
-    mid = request.POST.get('id')
-    WoodModel.objects.filter(id=mid).delete()
-    return render(request, 'woodlist.html')
+    obj_id = request.GET.get('id')
+    try:
+        WoodModel.objects.filter(id=obj_id).delete()
+    except Exception as e:
+        messages.success(request, e.args)
+    return HttpResponseRedirect('/home/wood/list/')
 
 
 class WoodListView(ListView):
@@ -37,7 +46,7 @@ class WoodListView(ListView):
 
     def get_queryset(self):  # 重写get_queryset方法
         # 获取所有is_deleted为False的用户，并且以时间倒序返回数据
-        return WoodModel.objects.filter(enable=True).order_by('-last_mod_time')
+        return WoodModel.objects.all().order_by('name')
 
     def get_context_data(self, **kwargs):
         context = super(WoodListView, self).get_context_data(**kwargs)
@@ -45,7 +54,11 @@ class WoodListView(ListView):
 
 
 def form_add(request):
-    woods = WoodModel.objects.filter(enable=True).order_by('name')
+    q = Q(enable=True)
+    obj_id = request.GET.get('id')
+    if obj_id:
+        q.add(Q(id=obj_id), Q.AND)
+    woods = WoodModel.objects.filter(q).order_by('name')
     types = FORM_TYPE
     return render(request, 'woodform.html', context={'woods': woods, "types": types})
 
@@ -55,27 +68,53 @@ def form_submit(request):
     wood_id = request.POST.get('name')
     count = int(request.POST.get('count'))
     form_type = int(request.POST.get('type'))
-    complete = request.POST.get('complete')
     note = request.POST.get('note')
     wood = WoodModel.objects.get(id=wood_id)
-    dic = {"arrive_date": time, "name": wood, "count": count, "type": form_type, "note": note}
-    if complete:
-        dic["sure"] = complete
+    dic = {"arrive_date": time, "name": wood, "count": count, "type": form_type, "note": note, "sure": True}
+    success = WoodFormModel.objects.create(**dic)
+    if success:
         sync_count(wood_id, count, form_type == 1)
-    WoodFormModel.objects.create(**dic)
     return HttpResponseRedirect('/home/wood/form/list/')
 
 
 def form_sure(request):
-    return render(request, 'woodformlist.html')
+    obj_id = request.GET.get('id')
+    obj = WoodFormModel.objects.get(id=obj_id)
+    obj.sure = not obj.sure
+    if obj.sure:
+        if obj.type == 1:
+            obj.name.count += obj.count
+        else:
+            obj.name.count -= obj.count
+    else:
+        if obj.type == 1:
+            obj.name.count -= obj.count
+        else:
+            obj.name.count += obj.count
+    obj.name.save()
+    obj.save()
+    return HttpResponseRedirect('/home/wood/form/list/')
 
 
 def form_complete(request):
-    return render(request, 'woodformlist.html')
+    obj_id = request.GET.get('id')
+    obj = WoodFormModel.objects.get(id=obj_id)
+    obj.complete = not obj.complete
+    obj.save()
+    return HttpResponseRedirect('/home/wood/form/list/')
 
 
 def form_delete(request):
-    return render(request, 'woodformlist.html')
+    obj_id = request.GET.get('id')
+    form = WoodFormModel.objects.get(id=obj_id)
+    if form.sure:
+        messages.success(request, "请先取消确认")
+    else:
+        try:
+            WoodFormModel.objects.filter(id=obj_id).delete()
+        except Exception as e:
+            messages.success(request, e.args)
+    return HttpResponseRedirect('/home/wood/form/list/')
 
 
 class WoodFormListView(ListView):
@@ -86,10 +125,14 @@ class WoodFormListView(ListView):
 
     def get_queryset(self):
         name = self.request.GET.get('name')
+        obj_id = self.request.GET.get('id')
+        q = Q()
         if name:
             id_list = WoodModel.objects.filter(name__contains=name)
-            return WoodFormModel.objects.filter(name_id__in=id_list).order_by('-last_mod_time')
-        return WoodFormModel.objects.all().order_by('-last_mod_time')
+            q.add(Q(name_id__in=id_list), Q.OR)
+        if obj_id:
+            q.add(Q(name_id=obj_id), Q.AND)
+        return WoodFormModel.objects.filter(q).order_by('-id')
 
     def get_context_data(self, **kwargs):
         context = super(WoodFormListView, self).get_context_data(**kwargs)

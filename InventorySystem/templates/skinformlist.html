@@ -2,12 +2,11 @@
 
 {% block table %}
 <div>
-    <div id="toolbar">
-        <form id="changelist-search" method="get">
+    <div class="top_tool_bar">
+        <form method="get">
             {% csrf_token %}
-            <input type="text" autocomplete="off" name="name" placeholder="搜索标题" class="el-input__inner"
-                   style="width:200px">
-            <button type="submit" class="el-button el-button--primary el-button--small">
+            <input type="text" name="name" placeholder="搜索名称">
+            <button type="submit">
                 <span>搜索</span>
             </button>
         </form>
@@ -29,16 +28,33 @@
                 <td>{{ form.arrive_date }}</td>
                 <td>{{ form.name.name }}</td>
                 <td>{{ form.count }}</td>
-                <td>{{ form.type }}</td>
                 <td>
-                    <a>确认<input type="checkbox"></a>
-                    <a>关闭<input type="checkbox"></a>
+                    {% if form.type == '1' %}
+                    入库
+                    {% elif form.type == '2' %}
+                    出库
+                    {% elif form.type == '3' %}
+                    损耗
+                    {% else %}
+                    订单
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="/home/skin/form/sure?id={{ form.id }}">
+                        {% if form.sure %}
+                        <input type="button" value="已确认">
+                        {% else %}
+                        <input type="button" value="确认">
+                        {% endif %}
+                    </a>
                 </td>
                 <td>
                     {% if form.order %}
                     <input type="button" value="关联订单">
                     {% else %}
-                    <input type="button" value="删除">
+                    <a href="/home/skin/form/del?id={{ form.id }}">
+                        <input type="button" value="删除">
+                    </a>
                     {% endif %}
                 </td>
             </tr>

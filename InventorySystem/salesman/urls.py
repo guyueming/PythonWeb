@@ -8,4 +8,5 @@ urlpatterns = [
     path('list/', views.SalesmanListView.as_view(), name='salesman_list'),
     path('submit/', views.submit),
     path('enable/', views.enable),
+    path('del/', views.delete),
 ]

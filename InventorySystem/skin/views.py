@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from .models import SkinModel
@@ -11,18 +12,28 @@ def add(request):
 
 def submit(request):
     name = request.POST.get('name')
+    factory = request.POST.get('factory')
     note = request.POST.get('note')
-    dic = {"name": name, "note": note}
+    dic = {"name": name, "note": note, "factory": factory}
     SkinModel.objects.create(**dic)
     return HttpResponseRedirect('/home/skin/list/')
 
 
 def enable(request):
-    return render(request, 'skinlist.html')
+    obj_id = request.GET.get('id')
+    obj = SkinModel.objects.get(id=obj_id)
+    obj.enable = not obj.enable
+    obj.save()
+    return HttpResponseRedirect('/home/skin/list/')
 
 
 def delete(request):
-    return render(request, 'skinlist.html')
+    obj_id = request.GET.get('id')
+    try:
+        SkinModel.objects.filter(id=obj_id).delete()
+    except Exception as e:
+        messages.success(request, e.args)
+    return HttpResponseRedirect('/home/skin/list/')
 
 
 class SkinListView(ListView):
@@ -32,7 +43,7 @@ class SkinListView(ListView):
     context_object_name = 'object_list'
 
     def get_queryset(self):
-        return SkinModel.objects.filter(enable=True).order_by('-last_mod_time')
+        return SkinModel.objects.all().order_by('name')
 
     def get_context_data(self, **kwargs):
         context = super(SkinListView, self).get_context_data(**kwargs)
@@ -62,15 +73,43 @@ def form_submit(request):
 
 
 def form_sure(request):
-    return render(request, 'skinformlist.html')
+    obj_id = request.GET.get('id')
+    obj = SkinFormModel.objects.get(id=obj_id)
+    obj.sure = not obj.sure
+    if obj.sure:
+        if obj.type == 1:
+            obj.name.count += obj.count
+        else:
+            obj.name.count -= obj.count
+    else:
+        if obj.type == 1:
+            obj.name.count -= obj.count
+        else:
+            obj.name.count += obj.count
+    obj.name.save()
+    obj.save()
+    return HttpResponseRedirect('/home/skin/form/list/')
 
 
 def form_complete(request):
-    return render(request, 'skinformlist.html')
+    obj_id = request.GET.get('id')
+    obj = SkinFormModel.objects.get(id=obj_id)
+    obj.complete = not obj.complete
+    obj.save()
+    return HttpResponseRedirect('/home/skin/form/list/')
 
 
 def form_delete(request):
-    return render(request, 'skinformlist.html')
+    obj_id = request.GET.get('id')
+    form = SkinFormModel.objects.get(id=obj_id)
+    if form.sure:
+        messages.success(request, "请先取消确认")
+    else:
+        try:
+            SkinFormModel.objects.filter(id=obj_id).delete()
+        except Exception as e:
+            messages.success(request, e.args)
+    return HttpResponseRedirect('/home/skin/form/list/')
 
 
 class SkinFormListView(ListView):
@@ -81,7 +120,7 @@ class SkinFormListView(ListView):
 
     def get_queryset(self):  # 重写get_queryset方法
         # 获取所有is_deleted为False的用户，并且以时间倒序返回数据
-        return SkinFormModel.objects.all().order_by('-last_mod_time')
+        return SkinFormModel.objects.all().order_by('-id')
 
     def get_context_data(self, **kwargs):
         context = super(SkinFormListView, self).get_context_data(**kwargs)

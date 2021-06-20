@@ -1,11 +1,11 @@
 {% extends 'table.html' %}
 
 {% block table %}
-<div class="module" id="changelist">
-    <div id="toolbar">
-        <div class="right">
+<div>
+    <div class="top_tool_bar">
+        <div class="right_buttons">
             <a href="/home/process/specification/add">
-                <button type="button" class="el-button el-button--primary el-button--small">
+                <button type="button">
                     <span>新增</span>
                 </button>
             </a>
@@ -26,10 +26,18 @@
                 <td>{{obj.name}}</td>
                 <td>{{obj.note}}</td>
                 <td>
-                    <a>停用<input type="checkbox" checked={{ obj.enable }}></a></td>
+                    <a href="/home/process/specification/enable?id={{ obj.id }}">
+                        {% if obj.enable %}
+                        <input type="button" value="停用">
+                        {% else %}
+                        <input type="button" value="已停用">
+                        {% endif %}
+                    </a>
                 </td>
                 <td>
-                    <input type="button" value="删除">
+                    <a href="/home/process/specification/del?id={{ obj.id }}">
+                        <input type="button" value="删除">
+                    </a>
                 </td>
             </tr>
             {% endfor %}

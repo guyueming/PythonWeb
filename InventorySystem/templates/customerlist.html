@@ -1,11 +1,18 @@
 {% extends 'table.html' %}
 
 {% block table %}
-<div class="module" id="changelist">
-    <div id="toolbar">
-        <div class="right">
+<div>
+    <div class="top_tool_bar">
+        <form method="get">
+            {% csrf_token %}
+            <input type="text" name="name" placeholder="搜索名称">
+            <button type="submit">
+                <span>搜索</span>
+            </button>
+        </form>
+        <div class="right_buttons">
             <a href="/home/customer/add">
-                <button type="button" class="el-button el-button--primary el-button--small">
+                <button type="button">
                     <span>新增</span>
                 </button>
             </a>
@@ -24,13 +31,25 @@
             </thead>
             {% for obj in object_list %}
             <tr>
-                <td>{{obj.id}}</td>
-                <td>{{obj.name}}</td>
-                <td>{{obj.phone}}</td>
-                <td>{{obj.address}}</td>
-                <td>{{obj.note}}</td>
-                <td><a> <input type="checkbox">停用 </a></td>
-                <td><a> <input type="button">删除 </a></td>
+                <td>{{ obj.id }}</td>
+                <td>{{ obj.name }}</td>
+                <td>{{ obj.phone }}</td>
+                <td>{{ obj.address }}</td>
+                <td>{{ obj.note }}</td>
+                <td>
+                    <a href="/home/customer/enable?id={{ obj.id }}">
+                        {% if obj.enable %}
+                        <input type="button" value="停用">
+                        {% else %}
+                        <input type="button" value="已停用">
+                        {% endif %}
+                    </a>
+                </td>
+                <td>
+                    <a href="/home/customer/del?id={{ obj.id }}">
+                        <input type="button" value="删除">
+                    </a>
+                </td>
             </tr>
             {% endfor %}
         </table>

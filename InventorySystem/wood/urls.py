@@ -6,13 +6,12 @@ urlpatterns = [
     path('list/', views.WoodListView.as_view(), name='wood_list'),
     path('submit/', views.submit),
     path('enable/', views.enable),
-    path('delete/', views.enable),
+    path('del/', views.delete),
 
     path('form/add', views.form_add, name='add_form'),
     path('form/list/', views.WoodFormListView.as_view(), name='wood_form_list'),
     path('form/submit/', views.form_submit),
-    path('form/complete/', views.form_complete),
     path('form/sure/', views.form_sure),
     path('form/complete/', views.form_complete),
-    path('form/delete/', views.form_delete),
+    path('form/del/', views.form_delete),
 ]

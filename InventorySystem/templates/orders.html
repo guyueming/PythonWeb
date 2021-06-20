@@ -1,0 +1,124 @@
+{% extends 'home.html' %}
+
+{% block list %}
+<form>
+    <div>
+        <label><span>下单时间：</span> <input type="date" name="order_time" value=""/></label><br>
+        <label><span>交货时间：</span> <input type="date" name="delivery_time" value=""/></label><br>
+        <label><span>销售员：</span>
+            <select name="salesman">
+                {% for m in salesman_list %}
+                <option value={{ m.id }}>{{ m.name }}</option>
+                {%endfor%}
+            </select>
+        </label>
+        <label>
+            <span>厂家：</span>
+            <select name="customer">
+                {% for m in customer_list %}
+                <option value={{ m.id }}>{{ m.name }}</option>
+                {%endfor%}
+            </select>
+        </label>
+    </div>
+    <div class="results" style="overflow:scroll;">
+        <table id="result_list">
+            <tr>
+                <th scope="col" class="sortable column-id">序号</th>
+                <th scope="col" class="sortable column-name">木料</th>
+                <th scope="col" class="sortable column-name">桉木皮</th>
+                <th scope="col" class="sortable column-name">纸张</th>
+                <th scope="col" class="sortable column-name">规格</th>
+                <th scope="col" class="sortable column-name">钢板工艺</th>
+                <th scope="col" class="sortable column-name">包装</th>
+                <th scope="col" class="sortable column-name">厚度</th>
+                <th scope="col" class="sortable column-name">打字</th>
+                <th scope="col" class="sortable column-name">商标</th>
+                <th scope="col" class="sortable column-name">开槽</th>
+                <th scope="col" class="sortable column-name">烘干</th>
+                <th scope="col" class="sortable column-name">备注</th>
+                <th scope="col">操作</th>
+            </tr>
+            {% for v in list %}
+            <tr>
+                <td>{{ v }}</td>
+                <td>
+                    <select name="wood">
+                        {% for m in wood_list %}
+                        <option value={{ m.id }}>{{ m.name }}</option>
+                        {%endfor%}
+                    </select>
+                    <input type="number" value="0">
+                </td>
+                <td>
+                    <select name="skin">
+                        {% for m in skin_list %}
+                        <option value={{ m.id }}>{{ m.name }}</option>
+                        {%endfor%}
+                    </select>
+                    <input type="number" value="0">
+                </td>
+                <td>
+                    <select name="paper">
+                        {% for m in paper_list %}
+                        <option value={{ m.id }}>{{ m.name }}</option>
+                        {%endfor%}
+                    </select>
+                    <input type="number" value="0">
+
+                    <select name="other_paper">
+                        {% for m in paper_list %}
+                        <option value={{ m.id }}>{{ m.name }}</option>
+                        {%endfor%}
+                    </select>
+                    <input type="number" value="0">
+                </td>
+                <td>
+                    <select name="technology">
+                        {% for m in technology_list %}
+                        <option value={{ m.id }}>{{ m.name }}</option>
+                        {%endfor%}
+                    </select>
+                </td>
+                <td>
+                    <select name="specification">
+                        {% for m in specification_list %}
+                        <option value={{ m.id }}>{{ m.name }}</option>
+                        {%endfor%}
+                    </select>
+                </td>
+                <td>
+                    <input type="text" name="color" value=""/>
+                </td>
+                <td>
+                    <input type="text" name="color" value=""/>
+                </td>
+                <td>
+                    <input type="text" name="color" value=""/>
+                </td>
+                <td>
+                    <input type="text" name="color" value=""/>
+                </td>
+                <td>
+                    <input type="checkbox" name="grooving" value="True"/>
+                </td>
+                <td>
+                    <input type="checkbox" name="grooving" value="True"/>
+                </td>
+                <td>
+                    <input type="text" name="color" value=""/>
+                </td>
+                <td>
+                    <a href="/home/wood/form/del">
+                        <input type="button" value="删除">
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div>
+        <input type="button" value="提交">
+    </div>
+</form>
+{% endblock%}

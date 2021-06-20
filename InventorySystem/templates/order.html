@@ -4,8 +4,9 @@
 <form method="post" action="/home/order/submit/" class="basic-grey">
     {% csrf_token %}
     <h1>订单</h1>
-    <label><span>下单时间：</span> <input type="date" name="order_time" value=""/></label><br>
-    <label><span>交货时间：</span> <input type="date" name="delivery_time" value=""/></label><br>
+    <label><span>订单编号：</span><input type="text" name="order_number" value=""/></label>
+    <label><span>下单时间：</span><input type="date" name="order_time" value=""/></label><br>
+    <label><span>交货时间：</span><input type="date" name="delivery_time" value=""/></label><br>
     <label><span>销售员：</span>
         <select name="salesman">
             {% for m in salesman_list %}
@@ -22,40 +23,46 @@
         </select>
     </label>
     <label>
-        <span>订单数量：</span>
-        <input type="text" name="count" onkeyup="value=value.replace(/[^\d]/g,'')"/>
-    </label>
-    <label><span>木料：</span>
+        <span>木料：</span>
+        <input type="number" name="wood_count" placeholder="数量" onkeyup="value=value.replace(/[^\d]/g,'')"/>
         <select name="wood">
             {% for m in wood_list %}
             <option value={{ m.id }}>{{ m.name }}</option>
             {%endfor%}
         </select>
     </label>
-    <label><span>数量：</span><input type="number" name="wood_count"
-                                  onkeyup="value=value.replace(/[^\d]/g,'')"/></label><br>
-
-    <label><span>桉木皮：</span>
+    <label>
+        <span>桉木皮：</span>
+        <input type="number" name="skin_count" placeholder="数量" onkeyup="value=value.replace(/[^\d]/g,'')"/>
         <select name="skin">
+            <option value="">无</option>
             {% for m in skin_list %}
             <option value={{ m.id }}>{{ m.name }}</option>
             {%endfor%}
         </select>
     </label>
-    <label><span>数量：</span><input type="number" name="skin_count"
-                                  onkeyup="value=value.replace(/[^\d]/g,'')"/></label><br>
-
-    <label><span>纸张：</span>
+    <label>
+        <span>纸张：</span>
+        <input type="number" name="paper_count" placeholder="数量" onkeyup="value=value.replace(/[^\d]/g,'')"/>
         <select name="paper">
+            <option value="">无</option>
             {% for m in paper_list %}
-            <option value={{ m.id }}>{{ m.name }}</option>
+            <option value={{ m.id }}>{{ m.name }}-{{ m.type }}-{{ m.factory }}</option>
             {%endfor%}
         </select>
     </label>
-    <label><span>数量：</span>
-        <input type="number" name="paper_count" onkeyup="value=value.replace(/[^\d]/g,'')"/>
-    </label><br>
-    <label><span>钢板工艺：</span>
+    <label>
+        <span>纸张：</span>
+        <input type="number" name="other_paper_count" placeholder="数量" onkeyup="value=value.replace(/[^\d]/g,'')"/>
+        <select name="other_paper">
+            <option value="">无</option>
+            {% for m in paper_list %}
+            <option value={{ m.id }}>{{ m.name }}-{{ m.type }}-{{ m.factory }}</option>
+            {%endfor%}
+        </select>
+    </label>
+    <label>
+        <span>钢板工艺：</span>
         <select name="technology">
             {% for m in technology_list %}
             <option value={{ m.id }}>{{ m.name }}</option>
@@ -69,18 +76,19 @@
             {%endfor%}
         </select>
     </label>
-    <label><span>花色：</span><input type="text" name="color" value=""/></label>
     <label><span>包装：</span><input type="text" name="package" value=""/></label>
     <label><span>厚度：</span><input type="text" name="thickness" value=""/></label>
     <label><span>商标：</span><input type="text" name="trademark" value=""/></label>
     <label><span>打字：</span><input type="text" name="word" value=""/></label>
-    <label><span>是否开槽：</span><input type="checkbox" name="grooving" value="True"/></label><br>
-    <label><span>是否烘干：</span><input type="checkbox" name="drying" value="True"/></label><br>
-    <label><span>备注：</span><input type="text" name="note" value=""/></label>
-    <label><span>确认：</span><input type="checkbox" name="sure" value="True"/></label><br>
+    <label><span>是否开槽：</span><input type="checkbox" name="grooving" value="True"/></label>
+    <label><span>是否烘干：</span><input type="checkbox" name="drying" value="True"/></label>
+    <label>
+        <span>备注：</span>
+        <textarea name="note"> </textarea>
+    </label>
     <label>
         <span>&nbsp;</span>
-        <input type="submit" value="提交">
+        <input type="submit" value="提交" class="button">
     </label>
 
 </form>

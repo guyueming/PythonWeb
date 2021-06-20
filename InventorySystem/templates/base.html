@@ -16,28 +16,14 @@
     <title>库存系统</title>
 </head>
 <body>
-<style type="text/css">
-    .el-tabs__nav .el-tabs__item:nth-child(1) .el-icon-close {
-        display: none;
-    }
-
-    * {
-        -webkit-overflow-scrolling: touch;
-    }
-
-    [v-block] {
-        display: none;
-    }
-
-</style>
 {% block content %}
 {% endblock %}
 </body>
 {% if messages %}
-<script>
-    {% for msg in messages %}
-        alert('{{ msg.message }}');
-    {% endfor %}
-</script>
+    <script>
+        {% for msg in messages %}
+            alert('{{ msg.message }}');
+        {% endfor %}
+    </script>
 {% endif %}
 </html>
