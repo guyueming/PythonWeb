@@ -1,25 +1,14 @@
 {% extends 'form.html' %}
 
 {% block form %}
-<form method="post" action="/home/customer/submit/" class="basic-grey">
+<form method="post" class="basic-grey">
     {% csrf_token %}
     <h1>客户</h1>
-    <label>
-        <span>名称:</span>
-        <input type="text" name="name"/>
-    </label>
-    <label>
-        <span>电话:</span>
-        <input type="text" name="phone"/>
-    </label>
-    <label>
-        <span>地址:</span>
-        <input type="text" name="address"/>
-    </label>
-    <label>
-        <span>备注:</span>
-        <input type="text" name="note"/>
-    </label>
+    <label style="color:#f00">{{ form.errors.name }}</label>
+    <label><span>{{ form.name.label }}：</span>{{ form.name }}</label>
+    <label><span>{{ form.phone.label }}：</span>{{ form.phone }}</label>
+    <label><span>{{ form.address.label }}：</span>{{ form.address }}</label>
+    <label><span>{{ form.note.label }}：</span>{{ form.note }}</label>
     <label>
         <span>&nbsp;</span>
         <input type="submit" value="提交" class="button">

@@ -1,6 +1,6 @@
 {% extends 'home.html' %}
 
-{% block list %}
+{% block extrahead %}
 <style>
   /* Basic Grey */
 .basic-grey {
@@ -92,6 +92,9 @@
 	background: # CF7A7A
 }
 </style>
+{% endblock %}
+
+{% block list %}
 <div class="flex" id="content">
 {% block form %}
 {% endblock %}

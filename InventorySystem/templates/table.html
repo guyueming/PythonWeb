@@ -1,6 +1,6 @@
 {% extends 'home.html' %}
 
-{% block list %}
+{% block extrahead %}
 <style>
 /*表格样式*/
 	table {
@@ -82,6 +82,9 @@ nav {
     border: 1px solid #409EFF;
 }
 </style>
+{% endblock %}
+
+{% block list %}
 <div class="flex" id="content">
     {% block table %}
     {% endblock %}

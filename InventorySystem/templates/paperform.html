@@ -10,15 +10,16 @@
     </label><br>
     <label>
         <span>纸张：</span>
-        <select name="name">
+        <input list="source" name="name" autocomplete="off">
+		<datalist id="source">
             {% for obj in object_list %}
             <option value={{ obj.id }}>{{ obj.name }}-{{ obj.type }}-{{ obj.factory }}</option>
             {%endfor%}
-        </select>
+        </datalist>
     </label>
     <label>
         <span>数量：</span>
-        <input type="number" name="count" onkeyup="value=value.replace(/[^\d]/g,'')"/>
+        <input type="number" name="count" pattern="(0-9)"/>
     </label>
     <label>
         <span>类型：</span>

@@ -12,6 +12,7 @@ urlpatterns = [
     path('del/', views.make_delete),
 
     path('head/list/', views.OrderHeadListView.as_view(), name='order_list'),
+    path('head/submit/', views.submit_order_list),
     path('head/complete/', views.make_head_complete),
     path('head/del/', views.make_head_delete),
 ]

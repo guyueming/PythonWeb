@@ -3,18 +3,19 @@ from django.shortcuts import render
 from .models import TechnologyModel, SpecificationModel
 from django.views.generic import ListView
 from django.contrib import messages
+from .forms import TechnologyForm, SpecificationForm
 
 
 def technology_add(request):
-    return render(request, 'technology.html')
-
-
-def technology_submit(request):
-    name = request.POST.get('name')
-    note = request.POST.get('note')
-    dic = {"name": name, "note": note}
-    TechnologyModel.objects.create(**dic)
-    return HttpResponseRedirect('/home/process/technology/list/')
+    if request.method == 'POST':
+        form = TechnologyForm(request.POST)
+        if form.is_valid():
+            dic = {"name": form.cleaned_data['name'], "note": form.cleaned_data['note']}
+            TechnologyModel.objects.create(**dic)
+            return HttpResponseRedirect('/home/process/technology/list/')
+    else:
+        form = TechnologyForm()
+    return render(request, 'technology.html', {'form': form})
 
 
 def technology_enable(request):
@@ -50,15 +51,15 @@ class TechnologyListView(ListView):
 
 
 def specification_add(request):
-    return render(request, 'specification.html')
-
-
-def specification_submit(request):
-    name = request.POST.get('name')
-    note = request.POST.get('note')
-    dic = {"name": name, "note": note}
-    SpecificationModel.objects.create(**dic)
-    return HttpResponseRedirect('/home/process/specification/list/')
+    if request.method == 'POST':
+        form = SpecificationForm(request.POST)
+        if form.is_valid():
+            dic = {"name": form.cleaned_data['name'], "note": form.cleaned_data['note']}
+            SpecificationModel.objects.create(**dic)
+            return HttpResponseRedirect('/home/process/specification/list/')
+    else:
+        form = SpecificationForm()
+    return render(request, 'specification.html', {'form': form})
 
 
 def specification_enable(request):

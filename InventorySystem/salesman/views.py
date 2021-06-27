@@ -1,12 +1,21 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from .models import SalesmanModel
+from .forms import SalesmanForm
 from django.views.generic import ListView
 from django.contrib import messages
 
 
 def add(request):
-    return render(request, 'salesman.html')
+    if request.method == 'POST':
+        form = SalesmanForm(request.POST)
+        if form.is_valid():
+            dic = {"name": form.cleaned_data['name'], "note": form.cleaned_data['note'], "phone": form.cleaned_data['phone']}
+            SalesmanModel.objects.create(**dic)
+            return HttpResponseRedirect('/home/salesman/list/')
+    else:
+        form = SalesmanForm()
+    return render(request, 'salesman.html', {'form': form})
 
 
 def submit(request):

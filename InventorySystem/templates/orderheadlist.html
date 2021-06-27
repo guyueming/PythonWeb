@@ -48,13 +48,19 @@
                 <td>
                     <a href="/home/order/head/complete?id={{ form.id }}">
                         {% if form.complete %}
-                        <input type="button" value="已确认">
+                        <input type="button" value="已完成">
                         {% else %}
-                        <input type="button" value="确认">
+                        <input type="button" value="完成">
                         {% endif %}
                     </a>
                 </td>
                 <td>
+                    <a href="/home/order/head/del?id={{ form.id }}">
+                        <input type="button" value="详情">
+                    </a>
+                    <a href="/home/order/head/del?id={{ form.id }}">
+                        <input type="button" value="编辑">
+                    </a>
                     <a href="/home/order/head/del?id={{ form.id }}">
                         <input type="button" value="删除">
                     </a>

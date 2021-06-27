@@ -14,3 +14,8 @@ class PaperModel(models.Model):
         '是否使用', default=True, blank=False, null=False)
     created_time = models.DateTimeField('创建时间', default=now)
     last_mod_time = models.DateTimeField('修改时间', auto_now=True)
+
+    objects = models.manager
+
+    def __str__(self):
+        return '%s-%s-%s-%s' % (self.name, self.color, self.type,  self.factory)

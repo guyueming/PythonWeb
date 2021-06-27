@@ -13,6 +13,9 @@ class TechnologyModel(models.Model):
 
     objects = models.manager
 
+    def __str__(self):
+        return self.name
+
 
 class SpecificationModel(models.Model):
     id = models.AutoField(primary_key=True)
@@ -24,3 +27,6 @@ class SpecificationModel(models.Model):
     last_mod_time = models.DateTimeField('修改时间', auto_now=True)
 
     objects = models.manager
+
+    def __str__(self):
+        return self.name

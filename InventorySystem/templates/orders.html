@@ -1,124 +1,261 @@
 {% extends 'home.html' %}
 
-{% block list %}
-<form>
-    <div>
-        <label><span>下单时间：</span> <input type="date" name="order_time" value=""/></label><br>
-        <label><span>交货时间：</span> <input type="date" name="delivery_time" value=""/></label><br>
-        <label><span>销售员：</span>
-            <select name="salesman">
-                {% for m in salesman_list %}
-                <option value={{ m.id }}>{{ m.name }}</option>
-                {%endfor%}
-            </select>
-        </label>
-        <label>
-            <span>厂家：</span>
-            <select name="customer">
-                {% for m in customer_list %}
-                <option value={{ m.id }}>{{ m.name }}</option>
-                {%endfor%}
-            </select>
-        </label>
-    </div>
-    <div class="results" style="overflow:scroll;">
-        <table id="result_list">
-            <tr>
-                <th scope="col" class="sortable column-id">序号</th>
-                <th scope="col" class="sortable column-name">木料</th>
-                <th scope="col" class="sortable column-name">桉木皮</th>
-                <th scope="col" class="sortable column-name">纸张</th>
-                <th scope="col" class="sortable column-name">规格</th>
-                <th scope="col" class="sortable column-name">钢板工艺</th>
-                <th scope="col" class="sortable column-name">包装</th>
-                <th scope="col" class="sortable column-name">厚度</th>
-                <th scope="col" class="sortable column-name">打字</th>
-                <th scope="col" class="sortable column-name">商标</th>
-                <th scope="col" class="sortable column-name">开槽</th>
-                <th scope="col" class="sortable column-name">烘干</th>
-                <th scope="col" class="sortable column-name">备注</th>
-                <th scope="col">操作</th>
-            </tr>
-            {% for v in list %}
-            <tr>
-                <td>{{ v }}</td>
-                <td>
-                    <select name="wood">
-                        {% for m in wood_list %}
-                        <option value={{ m.id }}>{{ m.name }}</option>
-                        {%endfor%}
-                    </select>
-                    <input type="number" value="0">
-                </td>
-                <td>
-                    <select name="skin">
-                        {% for m in skin_list %}
-                        <option value={{ m.id }}>{{ m.name }}</option>
-                        {%endfor%}
-                    </select>
-                    <input type="number" value="0">
-                </td>
-                <td>
-                    <select name="paper">
-                        {% for m in paper_list %}
-                        <option value={{ m.id }}>{{ m.name }}</option>
-                        {%endfor%}
-                    </select>
-                    <input type="number" value="0">
 
-                    <select name="other_paper">
-                        {% for m in paper_list %}
-                        <option value={{ m.id }}>{{ m.name }}</option>
-                        {%endfor%}
-                    </select>
-                    <input type="number" value="0">
+{% block extrahead %}
+<script type="text/javascript">
+    $(function() {
+        $('#id_orders_table tbody tr').formset({
+            // For inline formsets, be sure to set the prefix, as the default prefix
+            // ('form') isn't correct.
+            // Django appears to generate the prefix from the lowercase plural
+            // name of the related model, with camel-case converted to underscores.
+            prefix: 'ordered_items'
+        })
+    })
+</script>
+<style type="text/css">
+    .delete-row {
+        margin-left:5px;
+    }
+
+    /*表格样式*/
+	table {
+		width: 100%;
+		background: #ccc;
+		margin: 10px auto;
+        white-space:nowrap;
+		border-collapse: collapse;/*border-collapse:collapse合并内外边距(去除表格单元格默认的2个像素内外边距*/
+	}
+	th,td {
+		height: 25px;
+		line-height: 25px;
+		text-align: center;
+		border: 1px solid #ccc;
+	}
+	th {
+		background: #eee;
+		font-weight: normal;
+	}
+	td {
+	    min-width:80px;
+	    max-width:100%;
+	}
+	tr {
+		background: #fff;
+	}
+	tr:hover {
+		background: #cc0;
+	}
+	td a {
+		color: #06f;
+		text-decoration: none;
+	}
+	td a:hover {
+		color: #06f;
+		text-decoration: underline;
+	}
+</style>
+{% endblock %}
+
+
+{% block list %}
+<form action="" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    {{ formset.non_form_errors }}
+    <h2>订单详情</h2>
+    <div class="entry" style="overflow:scroll;">
+        <table name="table" id="id_orders_table">
+            <thead>
+            <tr>
+                <th scope="col"></th>
+                <th scope="col">木料</th>
+                <th scope="col">桉木皮</th>
+                <th scope="col">纸张</th>
+                <th scope="col">规格</th>
+                <th scope="col">钢板工艺</th>
+                <th scope="col">包装</th>
+                <th scope="col">厚度</th>
+                <th scope="col">打字</th>
+                <th scope="col">商标</th>
+                <th scope="col">开槽</th>
+                <th scope="col">烘干</th>
+                <th scope="col">备注</th>
+                <th scope="col"></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for form in formset %}
+            <tr id="{{ form.prefix }}-row">
+                <td>
                 </td>
                 <td>
-                    <select name="technology">
-                        {% for m in technology_list %}
-                        <option value={{ m.id }}>{{ m.name }}</option>
-                        {%endfor%}
-                    </select>
+                    {{ form.wood }}
+                    {{ form.woodCount }}
                 </td>
                 <td>
-                    <select name="specification">
-                        {% for m in specification_list %}
-                        <option value={{ m.id }}>{{ m.name }}</option>
-                        {%endfor%}
-                    </select>
+                    {{ form.skin }}
+                    {{ form.skinCount }}
                 </td>
                 <td>
-                    <input type="text" name="color" value=""/>
+                    {{ form.paper }} {{ form.paperCount }}<br>
+                    {{ form.other_paper }} {{ form.other_paper_count }}
                 </td>
                 <td>
-                    <input type="text" name="color" value=""/>
+                    {{ form.technology }}
                 </td>
                 <td>
-                    <input type="text" name="color" value=""/>
+                    {{ form.specifications }}
                 </td>
                 <td>
-                    <input type="text" name="color" value=""/>
+                    {{ form.packaging }}
                 </td>
                 <td>
-                    <input type="checkbox" name="grooving" value="True"/>
+                    {{ form.thickness }}
                 </td>
                 <td>
-                    <input type="checkbox" name="grooving" value="True"/>
+                    {{ form.trademark }}
                 </td>
                 <td>
-                    <input type="text" name="color" value=""/>
+                    {{ form.word }}
                 </td>
                 <td>
-                    <a href="/home/wood/form/del">
-                        <input type="button" value="删除">
-                    </a>
+                    {{ form.is_grooving }}
+                </td>
+                <td>
+                    {{ form.is_drying }}
+                </td>
+                <td>
+                    {{ form.note }}
+                </td>
+                <td>
                 </td>
             </tr>
             {% endfor %}
+            </tbody>
         </table>
     </div>
     <div>
-        <input type="button" value="提交">
+        {{ formset.management_form }}
+        <input type="submit" value="提交"/>
     </div>
+    <!--    <div>-->
+    <!--        <label><span>下单时间：</span> <input type="date" name="order_time" value=""/></label><br>-->
+    <!--        <label><span>交货时间：</span> <input type="date" name="delivery_time" value=""/></label><br>-->
+    <!--        <label><span>销售员：</span>-->
+    <!--            <select name="salesman">-->
+    <!--                {% for m in salesman_list %}-->
+    <!--                <option value={{ m.id }}>{{ m.name }}</option>-->
+    <!--                {%endfor%}-->
+    <!--            </select>-->
+    <!--        </label>-->
+    <!--        <label>-->
+    <!--            <span>厂家：</span>-->
+    <!--            <select name="customer">-->
+    <!--                {% for m in customer_list %}-->
+    <!--                <option value={{ m.id }}>{{ m.name }}</option>-->
+    <!--                {%endfor%}-->
+    <!--            </select>-->
+    <!--        </label>-->
+    <!--    </div>-->
+    <!--    <div class="results" style="overflow:scroll;">-->
+    <!--        <table name="table">-->
+    <!--            <tr>-->
+    <!--                <th scope="col" class="sortable column-id">序号</th>-->
+    <!--                <th scope="col" class="sortable column-name">木料</th>-->
+    <!--                <th scope="col" class="sortable column-name">桉木皮</th>-->
+    <!--                <th scope="col" class="sortable column-name">纸张</th>-->
+    <!--                <th scope="col" class="sortable column-name">规格</th>-->
+    <!--                <th scope="col" class="sortable column-name">钢板工艺</th>-->
+    <!--                <th scope="col" class="sortable column-name">包装</th>-->
+    <!--                <th scope="col" class="sortable column-name">厚度</th>-->
+    <!--                <th scope="col" class="sortable column-name">打字</th>-->
+    <!--                <th scope="col" class="sortable column-name">商标</th>-->
+    <!--                <th scope="col" class="sortable column-name">开槽</th>-->
+    <!--                <th scope="col" class="sortable column-name">烘干</th>-->
+    <!--                <th scope="col" class="sortable column-name">备注</th>-->
+    <!--                <th scope="col">操作</th>-->
+    <!--            </tr>-->
+    <!--            {% for v in list %}-->
+    <!--            <tr>-->
+    <!--                <td>{{ v }}</td>-->
+    <!--                <td>-->
+    <!--                    <select name="wood">-->
+    <!--                        {% for m in wood_list %}-->
+    <!--                        <option value={{ m.id }}>{{ m.name }}</option>-->
+    <!--                        {%endfor%}-->
+    <!--                    </select>-->
+    <!--                    <input type="number" value="0">-->
+    <!--                </td>-->
+    <!--                <td>-->
+    <!--                    <select name="skin">-->
+    <!--                        {% for m in skin_list %}-->
+    <!--                        <option value={{ m.id }}>{{ m.name }}</option>-->
+    <!--                        {%endfor%}-->
+    <!--                    </select>-->
+    <!--                    <input type="number" value="0">-->
+    <!--                </td>-->
+    <!--                <td>-->
+    <!--                    <select name="paper">-->
+    <!--                        {% for m in paper_list %}-->
+    <!--                        <option value={{ m.id }}>{{ m.name }}</option>-->
+    <!--                        {%endfor%}-->
+    <!--                    </select>-->
+    <!--                    <input type="number" value="0">-->
+
+    <!--                    <select name="other_paper">-->
+    <!--                        {% for m in paper_list %}-->
+    <!--                        <option value={{ m.id }}>{{ m.name }}</option>-->
+    <!--                        {%endfor%}-->
+    <!--                    </select>-->
+    <!--                    <input type="number" value="0">-->
+    <!--                </td>-->
+    <!--                <td>-->
+    <!--                    <select name="technology">-->
+    <!--                        {% for m in technology_list %}-->
+    <!--                        <option value={{ m.id }}>{{ m.name }}</option>-->
+    <!--                        {%endfor%}-->
+    <!--                    </select>-->
+    <!--                </td>-->
+    <!--                <td>-->
+    <!--                    <select name="specification">-->
+    <!--                        {% for m in specification_list %}-->
+    <!--                        <option value={{ m.id }}>{{ m.name }}</option>-->
+    <!--                        {%endfor%}-->
+    <!--                    </select>-->
+    <!--                </td>-->
+    <!--                <td>-->
+    <!--                    <input type="text" name="color" value=""/>-->
+    <!--                </td>-->
+    <!--                <td>-->
+    <!--                    <input type="text" name="color" value=""/>-->
+    <!--                </td>-->
+    <!--                <td>-->
+    <!--                    <input type="text" name="color" value=""/>-->
+    <!--                </td>-->
+    <!--                <td>-->
+    <!--                    <input type="text" name="color" value=""/>-->
+    <!--                </td>-->
+    <!--                <td>-->
+    <!--                    <input type="checkbox" name="grooving" value="True"/>-->
+    <!--                </td>-->
+    <!--                <td>-->
+    <!--                    <input type="checkbox" name="grooving" value="True"/>-->
+    <!--                </td>-->
+    <!--                <td>-->
+    <!--                    <input type="text" name="color" value=""/>-->
+    <!--                </td>-->
+    <!--                <td>-->
+    <!--                    <a href="/home/wood/form/del">-->
+    <!--                        <input type="button" value="删除">-->
+    <!--                    </a>-->
+    <!--                </td>-->
+    <!--            </tr>-->
+    <!--            {% endfor %}-->
+    <!--        </table>-->
+    <!--    </div>-->
+    <!--    <div>-->
+    <!--        <input type="submit" value="提交1">-->
+    <!--    </div>-->
 </form>
 {% endblock%}

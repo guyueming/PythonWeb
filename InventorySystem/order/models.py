@@ -21,6 +21,8 @@ class OrderNumberModel(models.Model):
     order_date = models.DateField('下单时间', default=now)
     order_number = models.IntegerField('订单编号', default=0)
 
+    objects = models.manager
+
 
 class OrderHeadModel(models.Model):
     id = models.AutoField(primary_key=True)
@@ -45,6 +47,11 @@ class OrderHeadModel(models.Model):
     created_time = models.DateTimeField('创建时间', default=now)
     last_mod_time = models.DateTimeField('修改时间', auto_now=True)
 
+    objects = models.manager
+
+    def __str__(self):
+        return self.order_number
+
 
 class OrderModel(models.Model):
     id = models.AutoField(primary_key=True)
@@ -60,19 +67,19 @@ class OrderModel(models.Model):
     skin = models.ForeignKey(
         SkinModel,
         verbose_name='桉木皮',
-        on_delete=models.PROTECT, null=True)
-    skinCount = models.IntegerField('桉木皮数量', default=0)
+        on_delete=models.PROTECT, null=True, blank=True)
+    skinCount = models.IntegerField('桉木皮数量', default=0, blank=True)
     paper = models.ForeignKey(
         PaperModel,
         verbose_name='纸张1',
-        on_delete=models.PROTECT, null=True)
-    paperCount = models.IntegerField('纸张数量', default=0)
+        on_delete=models.PROTECT, null=True, blank=True)
+    paperCount = models.IntegerField('纸张数量', default=0, blank=True)
     other_paper = models.ForeignKey(
         PaperModel,
         verbose_name='纸张2',
         related_name='other_paper',
-        on_delete=models.PROTECT, null=True)
-    other_paper_count = models.IntegerField('纸张数量', default=0)
+        on_delete=models.PROTECT, null=True, blank=True)
+    other_paper_count = models.IntegerField('纸张数量', default=0, blank=True)
     technology = models.ForeignKey(
         TechnologyModel,
         verbose_name='钢板工艺',
@@ -81,23 +88,25 @@ class OrderModel(models.Model):
         SpecificationModel,
         verbose_name='规格',
         on_delete=models.PROTECT)
-    packaging = models.TextField('包装', max_length=64, default='')
-    thickness = models.TextField('厚度', max_length=64, default='')
-    trademark = models.TextField('商标', max_length=64, default='')
-    word = models.TextField('打字', max_length=64, default='')
+    packaging = models.TextField('包装', max_length=64, default='', blank=True)
+    thickness = models.TextField('厚度', max_length=64, default='', blank=True)
+    trademark = models.TextField('商标', max_length=64, default='', blank=True)
+    word = models.TextField('打字', max_length=64, default='', blank=True)
     is_grooving = models.BooleanField(
         '是否开槽', default=False, blank=False, null=False)
     is_drying = models.BooleanField(
         '是否烘干', default=False, blank=False, null=False)
     sure = models.BooleanField(
         '是否确认', default=False, blank=False, null=False)
-    note = models.TextField('备注', max_length=256, default='')
+    note = models.TextField('备注', max_length=256, default='', blank=True)
     user = models.ForeignKey(
         User,
         verbose_name='作者',
         on_delete=models.PROTECT, null=True)
     created_time = models.DateTimeField('创建时间', default=now)
     last_mod_time = models.DateTimeField('修改时间', auto_now=True)
+
+    objects = models.manager
 
 
 class WoodFormModel(models.Model):

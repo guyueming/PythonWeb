@@ -62,11 +62,12 @@ def form_add(request):
 def form_submit(request):
     time = request.POST.get('time')
     mid = request.POST.get('name')
+    print(mid)
     count = int(request.POST.get('count'))
     form_type = int(request.POST.get('type'))
     obj = PaperModel.objects.get(id=mid)
     dic = {"arrive_date": time, "name": obj, "count": count, "type": form_type, "sure": True}
-    PaperFormModel.objects.create(**dic)
+    # PaperFormModel.objects.create(**dic)
     sync_count(mid, count, form_type == 1)
     return HttpResponseRedirect('/home/paper/form/list/')
 

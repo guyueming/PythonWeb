@@ -9,7 +9,7 @@ from salesman.models import SalesmanModel
 from process.models import TechnologyModel, SpecificationModel
 from order.models import OrderModel, WoodFormModel, SkinFormModel, PaperFormModel, OrderNumberModel, OrderHeadModel
 from django.views.generic import ListView
-from django.utils.timezone import now
+from .forms import OrderHeadForm, OrderFormSet
 
 
 def add(request):
@@ -27,20 +27,38 @@ def add(request):
                                                   'salesman_list': salesman_list})
 
 
-def add_orders(request):
-    wood_list = WoodModel.objects.filter(enable=True).order_by('name')
-    skin_list = SkinModel.objects.filter(enable=True).order_by('name')
-    paper_list = PaperModel.objects.filter(enable=True).order_by('name')
-    technology_list = TechnologyModel.objects.filter(enable=True).order_by('name')
-    specification_list = SpecificationModel.objects.filter(enable=True).order_by('name')
-    customer_list = CustomerModel.objects.filter(enable=True).order_by('name')
-    salesman_list = SalesmanModel.objects.filter(enable=True).order_by('name')
-    order_list = [1, 2, 3]
-    return render(request, 'orders.html', context={'wood_list': wood_list, 'skin_list': skin_list,
-                                                   'paper_list': paper_list, 'technology_list': technology_list,
-                                                   'specification_list': specification_list,
-                                                   'customer_list': customer_list,
-                                                   'salesman_list': salesman_list, "list": order_list})
+def add_orders(request):  # 创建
+    if request.method == "POST":
+        form = OrderHeadForm(request.POST)
+
+        if form.is_valid():
+            order_head = form.save()
+            formset = OrderFormSet(request.POST, instance=order_head)
+            if formset.is_valid():
+                formset.save()
+            print(formset)
+        return HttpResponseRedirect('/home/order/list/')
+    else:
+        form = OrderHeadForm()
+        formset = OrderFormSet()
+
+    return render(request, 'orders.html', {'form': form, 'formset': formset, })
+
+
+# def add_orders(request):
+#     wood_list = WoodModel.objects.filter(enable=True).order_by('name')
+#     skin_list = SkinModel.objects.filter(enable=True).order_by('name')
+#     paper_list = PaperModel.objects.filter(enable=True).order_by('name')
+#     technology_list = TechnologyModel.objects.filter(enable=True).order_by('name')
+#     specification_list = SpecificationModel.objects.filter(enable=True).order_by('name')
+#     customer_list = CustomerModel.objects.filter(enable=True).order_by('name')
+#     salesman_list = SalesmanModel.objects.filter(enable=True).order_by('name')
+#     order_list = [1, 2, 3]
+#     return render(request, 'orders.html', context={'wood_list': wood_list, 'skin_list': skin_list,
+#                                                    'paper_list': paper_list, 'technology_list': technology_list,
+#                                                    'specification_list': specification_list,
+#                                                    'customer_list': customer_list,
+#                                                    'salesman_list': salesman_list, "list": order_list})
 
 
 def submit(request):
@@ -106,6 +124,12 @@ def submit(request):
         sync_form_paper(order, order.other_paper, order.other_paper_count, True)
     else:
         messages.success(request, "创建失败")
+    return HttpResponseRedirect('/home/order/list/')
+
+
+def submit_order_list(request):
+    order = request.POST.get("table")
+    print(order)
     return HttpResponseRedirect('/home/order/list/')
 
 

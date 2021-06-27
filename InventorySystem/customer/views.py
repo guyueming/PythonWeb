@@ -1,12 +1,22 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from .models import CustomerModel
+from .forms import CustomerForm
 from django.views.generic import ListView
 from django.contrib import messages
 
 
 def add(request):
-    return render(request, 'customer.html')
+    if request.method == 'POST':
+        form = CustomerForm(request.POST)
+        if form.is_valid():
+            dic = {"name": form.cleaned_data['name'], "note": form.cleaned_data['note'],
+                   "address": form.cleaned_data['address'], "phone": form.cleaned_data['phone']}
+            CustomerModel.objects.create(**dic)
+            return HttpResponseRedirect('/home/customer/list/')
+    else:
+        form = CustomerForm()
+    return render(request, 'customer.html', {'form': form})
 
 
 def submit(request):

@@ -18,3 +18,6 @@ class SalesmanModel(models.Model):
         obj = self.objects.get(id=mid)
         obj.enable = obj.enable
         obj.save()
+
+    def __str__(self):
+        return self.name
