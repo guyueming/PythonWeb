@@ -10,6 +10,13 @@
                 <span>搜索</span>
             </button>
         </form>
+        <div class="right_buttons">
+            <a href="/home/skin/form/add">
+                <button type="button">
+                    <span>新增</span>
+                </button>
+            </a>
+        </div>
     </div>
     <div class="results">
         <table id="result_list">
@@ -61,35 +68,5 @@
             {% endfor %}
         </table>
     </div>
-    <nav aria-label="Page navigation">
-        <ul id="pagination-flickr">
-            <!--#上一页-->
-            {% if page_obj.has_previous %}
-            <li class="previous-off" aria-hidden="true">
-                <a href="?page={{ page_obj.previous_page_number }}">
-                    &laquo;
-                </a>
-            </li>
-            {% endif %}
-            <!--中间的页码，如果是当前页，添加active属性-->
-            {% for page in paginator.page_range %}
-            {% if page == page_obj.number %}
-            <li class="active">
-                <a href="?page={{ page }}">{{ page }}</a>
-            </li>
-            {% else %}
-            <li><a href="?page={{ page }}">{{ page }}</a></li>
-            {% endif %}
-            {% endfor %}
-            <!--#下一页-->
-            {% if page_obj.has_next %}
-            <li class="next" aria-hidden="true">
-                <a href="?page={{ page_obj.next_page_number }}" aria-label="Next">
-                    &raquo;
-                </a>
-            </li>
-            {% endif %}
-        </ul>
-    </nav>
 </div>
 {% endblock %}

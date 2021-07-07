@@ -2,12 +2,20 @@ from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from .models import SkinModel
+from .forms import SkinForm
 from order.models import FORM_TYPE, SkinFormModel
 from django.views.generic import ListView
 
 
 def add(request):
-    return render(request, 'skin.html')
+    if request.method == 'POST':
+        form = SkinForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/home/skin/list/')
+    else:
+        form = SkinForm()
+    return render(request, 'skin.html', {'form': form})
 
 
 def submit(request):

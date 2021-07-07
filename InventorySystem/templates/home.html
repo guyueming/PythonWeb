@@ -1,22 +1,18 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div id="main">
+<div>
     <section class="el-container" style="height: 795px;">
-        <aside class="el-aside menu" style="width: auto;">
+        <aside class="el-aside menu">
             <div class="logo-wrap">
-                <div class="left">
-                    <span>库存系统</span>
-                </div>
+                <span>库存系统</span>
             </div>
-            <ul role="menu" class="el-menu">
-                <div class="el-menu">
-                    {% for func in func_list %}
-                    <li role="menuitem" class="el-menu-item" style="padding-left: 40px;">
-                        <a href={{ func.1 }}>{{ func.0 }}</a>
-                    </li>
-                    {% endfor %}
-                </div>
+            <ul id="menu" class="el-menu">
+                {% for func in func_list %}
+                <li class="el-menu-item" style="padding-left: 40px;">
+                    <a href={{ func.1 }}><span>{{ func.0 }}</span></a>
+                </li>
+                {% endfor %}
             </ul>
         </aside>
         <section class="el-container is-vertical">
@@ -37,9 +33,10 @@
             <main>
                 {% if messages %}
                 <ul class="messages">
-                {% for message in messages %}
-                <li style="color:#f00" {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-                {% endfor %}
+                    {% for message in messages %}
+                    <li style="color:#f00" {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}
+                    </li>
+                    {% endfor %}
                 </ul>
                 {% endif %}
                 {% block list %}

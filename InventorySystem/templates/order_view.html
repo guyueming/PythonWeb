@@ -1,0 +1,161 @@
+{% extends 'home.html' %}
+
+
+{% block extrahead %}
+<style type="text/css">
+    .delete-row {
+        margin-left:5px;
+    }
+
+    /*表格样式*/
+	table {
+		width: 100%;
+		background: #ccc;
+		margin: 10px auto;
+        white-space:nowrap;
+		border-collapse: collapse;/*border-collapse:collapse合并内外边距(去除表格单元格默认的2个像素内外边距*/
+	}
+	th,td {
+		height: 25px;
+		line-height: 25px;
+		text-align: center;
+		border: 1px solid #ccc;
+	}
+	th {
+		background: #eee;
+		font-weight: normal;
+	}
+	td {
+	    min-width:20px;
+	    max-width:100%;
+	}
+	tr {
+		background: #fff;
+	}
+	tr:hover {
+		background: #cc0;
+	}
+	td a {
+		color: #06f;
+		text-decoration: none;
+	}
+	td a:hover {
+		color: #06f;
+		text-decoration: underline;
+	}
+</style>
+{% endblock %}
+
+
+{% block list %}
+<div class="flex" id="content">
+<form action="" method="post">
+    {% csrf_token %}
+    <div>
+    <label><span>{{ form.order_number.label }}：</span>{{ form.instance.order_number }}</label><br>
+    <label><span>{{ form.order_date.label }}：</span>{{ form.instance.order_date }}</label>
+    <label><span>{{ form.delivery_date.label }}：</span>{{ form.instance.delivery_date }}</label><br>
+    <label><span>{{ form.salesman.label }}：</span>{{ form.instance.salesman }}</label>
+    <label><span>{{ form.customer.label }}：</span>{{ form.instance.customer }}</label>
+    </div>
+    {{ formset.non_form_errors }}
+    <h2>订单详情</h2>
+    <div class="entry" style="overflow:scroll;">
+        <table name="table" id="id_orders_table">
+            <thead>
+            <tr>
+                <th scope="col"></th>
+                <th scope="col">木料</th>
+                <th scope="col">桉木皮</th>
+                <th scope="col">纸张</th>
+                <th scope="col">规格</th>
+                <th scope="col">钢板工艺</th>
+                <th scope="col">包装</th>
+                <th scope="col">厚度</th>
+                <th scope="col">打字</th>
+                <th scope="col">商标</th>
+                <th scope="col">开槽</th>
+                <th scope="col">烘干</th>
+                <th scope="col">备注</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for form in formset %}
+            <tr id="{{ form.prefix }}-row">
+                <td>
+                    {{ forloop.counter }}
+                </td>
+                <td>
+                    {{ form.instance.wood }} {{ form.instance.woodCount }}
+                </td>
+                <td>
+                    {% if form.instance.skin %}
+                    {{ form.instance.skin }} {{ form.instance.skinCount }}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if form.instance.paper %}
+                    {{ form.instance.paper }} {{ form.instance.paperCount }}<br>
+                    {% endif %}
+                    {% if form.instance.other_paper %}
+                    {{ form.instance.other_paper }} {{ form.instance.other_paper_count }}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if form.instance.technology %}
+                    {{ form.instance.technology }}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if form.instance.specifications %}
+                    {{ form.instance.specifications }}
+                    {% endif %}
+                </td>
+                <td>
+                    {{ form.instance.packaging }}
+                </td>
+                <td>
+                    {{ form.instance.thickness }}
+                </td>
+                <td>
+                    {{ form.instance.word }}
+                </td>
+                <td>
+                    {{ form.instance.trademark }}
+                </td>
+                <td>
+                    {% if form.instance.is_grooving %}
+                    是
+                    {% else %}
+                    否
+                    {% endif %}
+                </td>
+                <td>
+                    {% if form.instance.is_drying %}
+                    是
+                    {% else %}
+                    否
+                    {% endif %}
+                </td>
+                <td>
+                    {{ form.instance.note }}
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div>
+        {{ formset.management_form }}
+<!--                    <a href="/home/order/head/sure?id={{ form.id }}">-->
+<!--                        {% if form.complete %}-->
+<!--                        <input type="button" value="已确认">-->
+<!--                        {% else %}-->
+<!--                        <input type="button" value="确认">-->
+<!--                        {% endif %}-->
+<!--                    </a>-->
+<!--        <input type="submit" value="提交"/>-->
+    </div>
+</form>
+</div>
+{% endblock %}

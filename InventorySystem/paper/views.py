@@ -1,13 +1,27 @@
 from django.contrib import messages
-from django.http import HttpResponseRedirect
+from django.db.models import Q
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
+from .forms import PaperForm
 from .models import PaperModel
 from order.models import FORM_TYPE, PaperFormModel
 from django.views.generic import ListView
 
 
 def add(request):
-    return render(request, 'paper.html')
+    if request.method == 'POST':
+        form = PaperForm(request.POST)
+        if form.is_valid():
+            dic = {"name": form.cleaned_data['name'],
+                   "color": form.cleaned_data['color'],
+                   "type": form.cleaned_data['type'],
+                   "factory": form.cleaned_data['factory'],
+                   "note": form.cleaned_data['note']}
+            PaperModel.objects.create(**dic)
+            return HttpResponseRedirect('/home/paper/list/')
+    else:
+        form = PaperForm()
+    return render(request, 'paper.html', {'form': form})
 
 
 def submit(request):
@@ -59,17 +73,31 @@ def form_add(request):
     return render(request, 'paperform.html', context={'object_list': object_list, "types": types})
 
 
+def query_paper(name):
+    str_s = name.split('-')
+    if len(str_s) == 4:
+        q = Q(name=str_s[0])
+        q.add(Q(color=str_s[1]), Q.AND)
+        q.add(Q(type=str_s[2]), Q.AND)
+        q.add(Q(factory=str_s[3]), Q.AND)
+        return PaperModel.objects.filter(q).first()
+    return None
+
+
 def form_submit(request):
     time = request.POST.get('time')
-    mid = request.POST.get('name')
-    print(mid)
     count = int(request.POST.get('count'))
     form_type = int(request.POST.get('type'))
-    obj = PaperModel.objects.get(id=mid)
-    dic = {"arrive_date": time, "name": obj, "count": count, "type": form_type, "sure": True}
-    # PaperFormModel.objects.create(**dic)
-    sync_count(mid, count, form_type == 1)
-    return HttpResponseRedirect('/home/paper/form/list/')
+    obj = request.POST.get('name')
+    name = query_paper(obj)
+    if name:
+        dic = {"arrive_date": time, "name": name, "count": count, "type": form_type, "sure": True}
+        PaperFormModel.objects.create(**dic)
+        sync_count(obj.id, count, form_type == 1)
+        return HttpResponseRedirect('/home/paper/form/list/')
+    else:
+        messages.success(request, "纸张选择错误")
+    return HttpResponse(request)
 
 
 def form_sure(request):

@@ -5,7 +5,8 @@
     <div class="top_tool_bar">
         <form method="get">
             {% csrf_token %}
-            <input type="text" name="q" placeholder="销售员">
+            <input type="text" name="number" placeholder="订单编号">
+            <input type="text" name="order_date" placeholder="下单时间">
             <button type="submit">
                 <span>搜索</span>
             </button>
@@ -14,11 +15,6 @@
             <a href="/home/order/add">
                 <button type="button">
                     <span>新增</span>
-                </button>
-            </a>
-            <a href="/home/order/adds">
-                <button type="button">
-                    <span>新增订单</span>
                 </button>
             </a>
         </div>
@@ -38,7 +34,7 @@
             </tr>
             {% for form in object_list %}
             <tr>
-                <td>{{ form.id }}</td>
+                <td>{{ forloop.counter }}</td>
                 <td>{{ form.order_number }}</td>
                 <td>{{ form.order_date }}</td>
                 <td>{{ form.salesman.name }}</td>
@@ -55,15 +51,20 @@
                     </a>
                 </td>
                 <td>
-                    <a href="/home/order/head/del?id={{ form.id }}">
+                    <a href="/home/order/head/view/{{ form.id }}/">
                         <input type="button" value="详情">
                     </a>
-                    <a href="/home/order/head/del?id={{ form.id }}">
+                    {% if not form.complete %}
+                    <a href="/home/order/add/{{ form.id }}/">
+                        <input type="button" value="增加">
+                    </a>
+                    <a href="/home/order/head/edit/{{ form.id }}/">
                         <input type="button" value="编辑">
                     </a>
                     <a href="/home/order/head/del?id={{ form.id }}">
                         <input type="button" value="删除">
                     </a>
+                    {% endif %}
                 </td>
             </tr>
             {% endfor %}

@@ -1,12 +1,14 @@
 {% extends 'form.html' %}
 
+{% load order_extras %}
+
 {% block form %}
 <form method="post" action="/home/wood/form/submit/" class="basic-grey">
     {% csrf_token %}
     <h1>木料出入记录</h1>
     <label>
         <span>时间：</span>
-        <input type="date" name="time" value="2021-05-24"/>
+        <input type="date" name="time" value="{% default_time %}"/>
     </label><br>
     <label>
         <span>木料：</span>

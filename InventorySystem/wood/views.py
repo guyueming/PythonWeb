@@ -2,13 +2,20 @@ from django.contrib import messages
 from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from wood.models import WoodModel
+from .models import WoodModel
+from .forms import WoodForm
 from order.models import FORM_TYPE, WoodFormModel
 from django.views.generic import ListView
 
 
 def add(request):
-    return render(request, 'wood.html')
+    if request.method == 'POST':
+        form = WoodForm(request.POST)
+        if form.is_valid() and form.save():
+            return HttpResponseRedirect('/home/wood/list/')
+    else:
+        form = WoodForm()
+    return render(request, 'wood.html', {'form': form})
 
 
 def submit(request):

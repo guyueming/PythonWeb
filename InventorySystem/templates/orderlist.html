@@ -5,7 +5,11 @@
     <div class="top_tool_bar">
         <form method="get">
             {% csrf_token %}
-            <input type="text" name="q" placeholder="销售员">
+            <input type="text" name="order_date" placeholder="下单时间">
+            <input type="text" name="salesman" placeholder="销售员">
+            <input type="text" name="customer" placeholder="客户">
+            <input type="text" name="wood" placeholder="木料">
+            <input type="text" name="paper" placeholder="纸张">
             <button type="submit">
                 <span>搜索</span>
             </button>
@@ -16,11 +20,6 @@
                     <span>新增</span>
                 </button>
             </a>
-            <a href="/home/order/adds">
-                <button type="button">
-                    <span>新增订单</span>
-                </button>
-            </a>
         </div>
     </div>
     <div class="results" style="overflow:scroll;">
@@ -28,9 +27,6 @@
             <tr>
                 <th scope="col" class="sortable column-id">序号</th>
                 <th scope="col" class="sortable column-id">订单编号</th>
-                <th scope="col" class="sortable column-name">下单时间</th>
-                <th scope="col" class="sortable column-name">销售</th>
-                <th scope="col" class="sortable column-name">客户</th>
                 <th scope="col" class="sortable column-name">木料</th>
                 <th scope="col" class="sortable column-name">数量</th>
                 <th scope="col" class="sortable column-name">桉木皮</th>
@@ -43,18 +39,18 @@
                 <th scope="col" class="sortable column-name">商标</th>
                 <th scope="col" class="sortable column-name">开槽</th>
                 <th scope="col" class="sortable column-name">烘干</th>
-                <th scope="col" class="sortable column-name">交货时间</th>
+<!--                <th scope="col" class="sortable column-name">销售</th>-->
+<!--                <th scope="col" class="sortable column-name">客户</th>-->
+<!--                <th scope="col" class="sortable column-name">下单时间</th>-->
+<!--                <th scope="col" class="sortable column-name">交货时间</th>-->
                 <th scope="col" class="sortable column-name">备注</th>
                 <th scope="col">状态</th>
                 <th scope="col">操作</th>
             </tr>
             {% for form in object_list %}
             <tr>
-                <td>{{ form.id }}</td>
+                <td>{{ forloop.counter }}</td>
                 <td>{{ form.head_number.order_number }}</td>
-                <td>{{ form.head_number.order_date }}</td>
-                <td>{{ form.head_number.salesman.name }}</td>
-                <td>{{ form.head_number.customer.name }}</td>
                 <td>{{ form.wood.name }}</td>
                 <td>{{ form.woodCount }}</td>
                 <td>{{ form.skin.name }}({{ form.skinCount }})</td>
@@ -83,9 +79,15 @@
                     否
                     {% endif %}
                 </td>
-                <td>{{form.head_number.delivery_date}}</td>
-                <td>{{form.note}}</td>
+<!--                <td>{{ form.head_number.salesman.name }}</td>-->
+<!--                <td>{{ form.head_number.customer.name }}</td>-->
+<!--                <td>{{ form.head_number.order_date }}</td>-->
+<!--                <td>{{ form.head_number.delivery_date }}</td>-->
+                <td>{{ form.note }}</td>
                 <td>
+                    {% if form.head_number.complete %}
+                    <input type="button" value="已完成">
+                    {% else %}
                     <a href="/home/order/sure?id={{ form.id }}">
                         {% if form.sure %}
                         <input type="button" value="已确认">
@@ -93,11 +95,21 @@
                         <input type="button" value="确认">
                         {% endif %}
                     </a>
+                    {% endif %}
                 </td>
                 <td>
+                    <a href="/home/order/head/view/{{ form.head_number.id }}/">
+                        <input type="button" value="详情">
+                    </a>
+
+                    {% if not form.head_number.complete and not form.sure %}
+                    <a href="/home/order/head/edit/{{ form.head_number.id }}/">
+                        <input type="button" value="编辑">
+                    </a>
                     <a href="/home/order/del?id={{ form.id }}">
                         <input type="button" value="删除">
                     </a>
+                    {% endif %}
                 </td>
             </tr>
             {% endfor %}

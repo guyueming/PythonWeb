@@ -19,7 +19,7 @@ def add(request):
     return render(request, 'customer.html', {'form': form})
 
 
-def submit(request):
+def edit(request, pk):
     name = request.POST.get('name')
     phone = request.POST.get('phone')
     address = request.POST.get('address')
@@ -53,6 +53,8 @@ class CustomerListView(ListView):
     context_object_name = 'object_list'
 
     def get_queryset(self):  # 重写get_queryset方法
+        print("get_queryset", self.request.GET.get("page"))
+        print("get_queryset", self.request.GET.get("name"))
         return CustomerModel.objects.all().order_by('-id')
 
     def get_context_data(self, **kwargs):

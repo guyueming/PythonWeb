@@ -18,7 +18,8 @@ FORM_TYPE = (
 
 
 class OrderNumberModel(models.Model):
-    order_date = models.DateField('下单时间', default=now)
+    id = models.AutoField(primary_key=True)
+    order_date = models.IntegerField('下单时间', default=0)
     order_number = models.IntegerField('订单编号', default=0)
 
     objects = models.manager
@@ -37,6 +38,8 @@ class OrderHeadModel(models.Model):
         CustomerModel,
         verbose_name='厂家',
         on_delete=models.PROTECT, null=True)
+    sure = models.BooleanField(
+        '是否确认', default=False, blank=False, null=False)
     complete = models.BooleanField(
         '是否完成', default=False, blank=False, null=False)
     note = models.TextField('备注', max_length=256, default='')
@@ -54,7 +57,7 @@ class OrderHeadModel(models.Model):
 
 
 class OrderModel(models.Model):
-    id = models.AutoField(primary_key=True)
+    id = models.AutoField(primary_key=True, blank=True)
     head_number = models.ForeignKey(
         OrderHeadModel,
         verbose_name='订单编号',
@@ -83,21 +86,21 @@ class OrderModel(models.Model):
     technology = models.ForeignKey(
         TechnologyModel,
         verbose_name='钢板工艺',
-        on_delete=models.PROTECT)
+        on_delete=models.PROTECT, null=True, blank=True)
     specifications = models.ForeignKey(
         SpecificationModel,
         verbose_name='规格',
-        on_delete=models.PROTECT)
+        on_delete=models.PROTECT, null=True, blank=True)
     packaging = models.TextField('包装', max_length=64, default='', blank=True)
     thickness = models.TextField('厚度', max_length=64, default='', blank=True)
     trademark = models.TextField('商标', max_length=64, default='', blank=True)
     word = models.TextField('打字', max_length=64, default='', blank=True)
     is_grooving = models.BooleanField(
-        '是否开槽', default=False, blank=False, null=False)
+        '是否开槽', default=False, blank=False)
     is_drying = models.BooleanField(
-        '是否烘干', default=False, blank=False, null=False)
+        '是否烘干', default=False, blank=False)
     sure = models.BooleanField(
-        '是否确认', default=False, blank=False, null=False)
+        '是否确认', default=False, blank=False)
     note = models.TextField('备注', max_length=256, default='', blank=True)
     user = models.ForeignKey(
         User,
@@ -106,7 +109,7 @@ class OrderModel(models.Model):
     created_time = models.DateTimeField('创建时间', default=now)
     last_mod_time = models.DateTimeField('修改时间', auto_now=True)
 
-    objects = models.manager
+    objects = models.Manager()
 
 
 class WoodFormModel(models.Model):
@@ -134,6 +137,8 @@ class WoodFormModel(models.Model):
     created_time = models.DateTimeField('创建时间', default=now)
     last_mod_time = models.DateTimeField('修改时间', auto_now=True)
 
+    objects = models.Manager()
+
 
 class SkinFormModel(models.Model):
     id = models.AutoField(primary_key=True)
@@ -159,6 +164,8 @@ class SkinFormModel(models.Model):
     note = models.TextField('备注', max_length=256, default='')
     created_time = models.DateTimeField('创建时间', default=now)
     last_mod_time = models.DateTimeField('修改时间', auto_now=True)
+
+    objects = models.Manager()
 
 
 class PaperFormModel(models.Model):
@@ -186,3 +193,5 @@ class PaperFormModel(models.Model):
     note = models.TextField('备注', max_length=256, default='')
     created_time = models.DateTimeField('创建时间', default=now)
     last_mod_time = models.DateTimeField('修改时间', auto_now=True)
+
+    objects = models.Manager()

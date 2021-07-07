@@ -1,5 +1,7 @@
 {% extends 'home.html' %}
 
+{% load order_extras %}
+
 {% block extrahead %}
 <style>
 /*表格样式*/
@@ -93,7 +95,7 @@ nav {
             <!--#上一页-->
             {% if page_obj.has_previous %}
             <li>
-                <a href="?page={{ page_obj.previous_page_number }}">
+                <a href="?{% param_replace page=page_obj.previous_page_number %}">
                    <span  aria-hidden="true">&laquo;</span>
                 </a>
             </li>
@@ -102,18 +104,18 @@ nav {
             {% for page in paginator.page_range %}
             {% if page == page_obj.number %}
             <li>
-                <a href="?page={{ page }}" aria-current="page"><span>{{ page }}</span></a>
+                <a aria-current="page"><span>{{ page }}</span></a>
             </li>
             {% else %}
             <li>
-                <a href="?page={{ page }}"><span>{{ page }}</span></a>
+                <a href="?{% param_replace page=page %}"><span>{{ page }}</span></a>
             </li>
             {% endif %}
             {% endfor %}
             <!--#下一页-->
             {% if page_obj.has_next %}
             <li>
-                <a href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                <a href="?{% param_replace page=page_obj.next_page_number %}" aria-label="Next">
                     <span  aria-hidden="true">&raquo;</span>
                 </a>
             </li>

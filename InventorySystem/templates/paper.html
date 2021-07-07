@@ -1,14 +1,15 @@
 {% extends 'form.html' %}
 
 {% block form %}
-<form method="post" action="/home/paper/submit/" class="basic-grey">
+<form method="post" class="basic-grey">
     {% csrf_token %}
     <h1>纸张</h1>
-    <label><span>名称：</span><input type="text" name="name"/></label>
-    <label><span>型号：</span><input type="text" name="model"/></label>
-    <label><span>花色：</span><input type="text" name="color"/></label>
-    <label><span>厂家：</span><input type="text" name="factory"/></label>
-    <label><span>备注：</span><input type="text" name="note"/></label>
+    <label style="color:#f00">{{ form.errors.name }}</label>
+    <label><span>{{ form.name.label }}：</span>{{ form.name }}</label>
+    <label><span>{{ form.type.label }}：</span>{{ form.type }}</label>
+    <label><span>{{ form.color.label }}：</span>{{ form.color }}</label>
+    <label><span>{{ form.factory.label }}：</span>{{ form.factory }}</label>
+    <label><span>{{ form.note.label }}：</span>{{ form.note }}</label>
     <label>
         <span></span>
         <input type="submit" value="提交">

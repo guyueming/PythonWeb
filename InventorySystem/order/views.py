@@ -1,4 +1,7 @@
+import time
+
 from django.contrib import messages
+from django.db.models import Q
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from wood.models import WoodModel
@@ -9,148 +12,205 @@ from salesman.models import SalesmanModel
 from process.models import TechnologyModel, SpecificationModel
 from order.models import OrderModel, WoodFormModel, SkinFormModel, PaperFormModel, OrderNumberModel, OrderHeadModel
 from django.views.generic import ListView
-from .forms import OrderHeadForm, OrderFormSet
+from .forms import OrderHeadForm, OrderFormSet, ViewOrderFormSet
 
 
-def add(request):
-    wood_list = WoodModel.objects.filter(enable=True).order_by('name')
-    skin_list = SkinModel.objects.filter(enable=True).order_by('name')
-    paper_list = PaperModel.objects.filter(enable=True).order_by('name')
-    technology_list = TechnologyModel.objects.filter(enable=True).order_by('name')
-    specification_list = SpecificationModel.objects.filter(enable=True).order_by('name')
-    customer_list = CustomerModel.objects.filter(enable=True).order_by('name')
-    salesman_list = SalesmanModel.objects.filter(enable=True).order_by('name')
-    return render(request, 'order.html', context={'wood_list': wood_list, 'skin_list': skin_list,
-                                                  'paper_list': paper_list, 'technology_list': technology_list,
-                                                  'specification_list': specification_list,
-                                                  'customer_list': customer_list,
-                                                  'salesman_list': salesman_list})
+def add_order(request, pk):
+    head = OrderHeadModel.objects.get(id=pk)
+    if request.method == "GET":
+        wood_list = WoodModel.objects.filter(enable=True).order_by('name')
+        skin_list = SkinModel.objects.filter(enable=True).order_by('name')
+        paper_list = PaperModel.objects.filter(enable=True).order_by('name')
+        technology_list = TechnologyModel.objects.filter(enable=True).order_by('name')
+        specification_list = SpecificationModel.objects.filter(enable=True).order_by('name')
+        return render(request, 'order.html', context={'wood_list': wood_list, 'skin_list': skin_list,
+                                                    'paper_list': paper_list, 'technology_list': technology_list,
+                                                    'specification_list': specification_list, 'head': head, })
+    else:
+        wood_id = request.POST.get('wood')
+        wood_count = int(request.POST.get('wood_count'))
+        technology_id = request.POST.get('technology')
+        specification_id = request.POST.get('specification')
+        packaging = request.POST.get('package')
+        thickness = request.POST.get('thickness')
+        trademark = request.POST.get('trademark')
+        word = request.POST.get('word')
+        note = request.POST.get('note')
+        grooving = request.POST.get('grooving')
+        drying = request.POST.get('drying')
+        wood = WoodModel.objects.get(id=wood_id)
+        technology = TechnologyModel.objects.get(id=technology_id)
+        specifications = SpecificationModel.objects.get(id=specification_id)
+        dic = {"head_number": head,
+               "wood": wood, "woodCount": wood_count,
+               "technology": technology, "specifications": specifications,
+               "packaging": packaging, "thickness": thickness,
+               "trademark": trademark, "word": word, "note": note,
+               "is_grooving": grooving if grooving else False,
+               "is_drying": drying if drying else False,
+               "sure": True,
+               }
+        skin_id = request.POST.get('skin')
+        if skin_id:
+            skin = SkinModel.objects.get(id=skin_id)
+            skin_count = int(request.POST.get('skin_count'))
+            dic["skin"] = skin
+            dic["skinCount"] = skin_count
+
+        paper_name = request.POST.get('paper')
+        paper = query_paper(paper_name)
+        if paper:
+            paper_count = int(request.POST.get('paper_count'))
+            dic["paper"] = paper
+            dic["paperCount"] = paper_count
+
+        other_paper_name = request.POST.get('other_paper')
+        other_paper = query_paper(other_paper_name)
+        if other_paper:
+            other_paper_count = int(request.POST.get('other_paper_count'))
+            dic["other_paper"] = other_paper
+            dic["other_paper_count"] = other_paper_count
+
+        order = OrderModel.objects.create(**dic)
+        if order:
+            sync_form_wood(order, order.wood, order.woodCount, True)
+            sync_form_skin(order, order.skin, order.skinCount, True)
+            sync_form_paper(order, order.paper, order.paperCount, True)
+            sync_form_paper(order, order.other_paper, order.other_paper_count, True)
+        else:
+            messages.success(request, "创建失败")
+        return HttpResponseRedirect('/home/order/list/')
 
 
-def add_orders(request):  # 创建
+def query_paper(name):
+    str_s = name.split('-')
+    if len(str_s) == 4:
+        q = Q(name=str_s[0])
+        q.add(Q(color=str_s[1]), Q.AND)
+        q.add(Q(type=str_s[2]), Q.AND)
+        q.add(Q(factory=str_s[3]), Q.AND)
+        return PaperModel.objects.filter(q).first()
+    return None
+
+
+def get_order_number():
+    date = int(time.strftime("%Y%m%d", time.localtime()))
+    try:
+        number = OrderNumberModel.objects.get(order_date=date)
+    except OrderNumberModel.DoesNotExist:
+        dic = {"order_date": date, "order_number": 0}
+        number = OrderNumberModel.objects.create(**dic)
+
+    if number.order_number > 9999:
+        return 0
+
+    number.order_number += 1
+    number.save()
+    order_number = date * 10000 + number.order_number
+    return order_number
+
+
+def add_orders(request):
     if request.method == "POST":
         form = OrderHeadForm(request.POST)
-
+        products = []
+        success = True
         if form.is_valid():
-            order_head = form.save()
+            order_head = form.save(commit=False)
             formset = OrderFormSet(request.POST, instance=order_head)
-            if formset.is_valid():
-                formset.save()
-            print(formset)
-        return HttpResponseRedirect('/home/order/list/')
+            for order in formset:
+                if order.is_valid():
+                    model = order.save(commit=False)
+                    products.append(model)
+                else:
+                    success = False
+                    print(order)
+            if success:
+                order_head.save()
+                for item in products:
+                    item.save()
+                    update_sure_state(item.id, True)
+                return HttpResponseRedirect('/home/order/list/')
     else:
-        form = OrderHeadForm()
+        form = OrderHeadForm(initial={'order_number': get_order_number()})
         formset = OrderFormSet()
-
     return render(request, 'orders.html', {'form': form, 'formset': formset, })
 
 
-# def add_orders(request):
-#     wood_list = WoodModel.objects.filter(enable=True).order_by('name')
-#     skin_list = SkinModel.objects.filter(enable=True).order_by('name')
-#     paper_list = PaperModel.objects.filter(enable=True).order_by('name')
-#     technology_list = TechnologyModel.objects.filter(enable=True).order_by('name')
-#     specification_list = SpecificationModel.objects.filter(enable=True).order_by('name')
-#     customer_list = CustomerModel.objects.filter(enable=True).order_by('name')
-#     salesman_list = SalesmanModel.objects.filter(enable=True).order_by('name')
-#     order_list = [1, 2, 3]
-#     return render(request, 'orders.html', context={'wood_list': wood_list, 'skin_list': skin_list,
-#                                                    'paper_list': paper_list, 'technology_list': technology_list,
-#                                                    'specification_list': specification_list,
-#                                                    'customer_list': customer_list,
-#                                                    'salesman_list': salesman_list, "list": order_list})
-
-
-def submit(request):
-    order_number = request.POST.get('order_number')
-    order_time = request.POST.get('order_time')
-    delivery_time = request.POST.get('delivery_time')
-    salesman_id = request.POST.get('salesman')
-    customer_id = request.POST.get('customer')
-    wood_id = request.POST.get('wood')
-    wood_count = int(request.POST.get('wood_count'))
-    technology_id = request.POST.get('technology')
-    specification_id = request.POST.get('specification')
-    packaging = request.POST.get('package')
-    thickness = request.POST.get('thickness')
-    trademark = request.POST.get('trademark')
-    word = request.POST.get('word')
-    note = request.POST.get('note')
-    grooving = request.POST.get('grooving')
-    drying = request.POST.get('drying')
-    salesman = SalesmanModel.objects.get(id=salesman_id)
-    customer = CustomerModel.objects.get(id=customer_id)
-    wood = WoodModel.objects.get(id=wood_id)
-    technology = TechnologyModel.objects.get(id=technology_id)
-    specifications = SpecificationModel.objects.get(id=specification_id)
-    order_dic = {"order_number": order_number, "order_date": order_time, "delivery_date": delivery_time,
-                 "salesman": salesman, "customer": customer}
-    order_head = OrderHeadModel.objects.create(**order_dic)
-    dic = {"head_number": order_head,
-           "wood": wood, "woodCount": wood_count,
-           "technology": technology, "specifications": specifications,
-           "packaging": packaging, "thickness": thickness,
-           "trademark": trademark, "word": word, "note": note,
-           "is_grooving": grooving if grooving else False,
-           "is_drying": drying if drying else False,
-           "sure": True,
-           }
-    skin_id = request.POST.get('skin')
-    if skin_id:
-        skin = SkinModel.objects.get(id=skin_id)
-        skin_count = int(request.POST.get('skin_count'))
-        dic["skin"] = skin
-        dic["skinCount"] = skin_count
-
-    paper_id = request.POST.get('paper')
-    if paper_id:
-        paper = PaperModel.objects.get(id=paper_id)
-        paper_count = int(request.POST.get('paper_count'))
-        dic["paper"] = paper
-        dic["paperCount"] = paper_count
-
-    other_paper_id = request.POST.get('other_paper')
-    if other_paper_id:
-        other_paper = PaperModel.objects.get(id=other_paper_id)
-        other_paper_count = int(request.POST.get('other_paper_count'))
-        dic["other_paper"] = other_paper
-        dic["other_paper_count"] = other_paper_count
-
-    order = OrderModel.objects.create(**dic)
-    if order:
-        sync_form_wood(order, order.wood, order.woodCount, True)
-        sync_form_skin(order, order.skin, order.skinCount, True)
-        sync_form_paper(order, order.paper, order.paperCount, True)
-        sync_form_paper(order, order.other_paper, order.other_paper_count, True)
+def view_orders(request, pk):
+    if request.method == "POST":
+        form = OrderHeadForm(request.POST)
+        if form.is_valid():
+            order_head = form.save()
+            formset = ViewOrderFormSet(request.POST, instance=order_head)
+            if formset.is_valid():
+                formset.save()
     else:
-        messages.success(request, "创建失败")
+        order_heads = OrderHeadModel.objects.filter(id=pk)
+        if order_heads and len(order_heads) > 0:
+            form = OrderHeadForm(instance=order_heads[0])
+            formset = ViewOrderFormSet(instance=order_heads[0])
+            return render(request, 'order_view.html', {'form': form, 'formset': formset, })
+
     return HttpResponseRedirect('/home/order/list/')
 
 
-def submit_order_list(request):
-    order = request.POST.get("table")
-    print(order)
-    return HttpResponseRedirect('/home/order/list/')
+def edit_orders(request, pk):
+    try:
+        order_head = OrderHeadModel.objects.get(id=pk)
+    except OrderHeadModel.DoesNotExist:
+        return HttpResponseRedirect('/home/order/list/')
 
-
-def make_edit(request):
-    return HttpResponseRedirect('/home/order/list/')
+    if request.method == "POST":
+        form = OrderHeadForm(request.POST, instance=order_head)
+        formset = ViewOrderFormSet(request.POST)
+        if form.is_valid() and formset.is_valid():
+            products = []
+            success = False
+            for item in formset:
+                if item.is_valid():
+                    products.append(item)
+                else:
+                    print(item)
+                    success = False
+            if success:
+                for item in products:
+                    model = item.save(commit=False)
+                    update_sure_state(model.id, False)
+                    model.save()
+                    update_sure_state(model.id, True)
+                if form.has_changed():
+                    form.save()
+                return HttpResponseRedirect('/home/order/list/')
+    else:
+        form = OrderHeadForm(instance=order_head)
+        formset = ViewOrderFormSet(instance=order_head)
+        print(formset)
+    return render(request, 'orders.html', {'form': form, 'formset': formset, })
 
 
 def make_sure(request):
     obj_id = request.GET.get('id')
-    obj = OrderModel.objects.get(id=obj_id)
-    obj.sure = not obj.sure
-    sync_material_count(obj)
-    obj.save()
+    update_sure_state(obj_id)
     return HttpResponseRedirect('/home/order/list/')
 
 
-def make_complete(request):
+def make_head_sure(request):
+    obj_id = request.GET.get('id')
+    update_head_sure_state(obj_id)
     return HttpResponseRedirect('/home/order/list/')
 
 
 def make_head_complete(request):
+    obj_id = request.GET.get('id')
+    orders = OrderModel.objects.filter(head_number=obj_id)
+    for item in orders:
+        if not item.sure:
+            messages.success(request, "请先确认所有数据")
+            return HttpResponseRedirect('/home/order/head/list/')
+    obj = OrderHeadModel.objects.get(id=obj_id)
+    obj.complete = not obj.complete
+    obj.save()
     return HttpResponseRedirect('/home/order/head/list/')
 
 
@@ -169,6 +229,9 @@ def make_delete(request):
 
 def make_head_delete(request):
     obj_id = request.GET.get('id')
+    form = OrderHeadModel.objects.get(id=obj_id)
+    if form.sure:
+        messages.success(request, "请先取消确认")
     try:
         OrderHeadModel.objects.filter(id=obj_id).delete()
     except Exception as e:
@@ -202,6 +265,23 @@ class OrderHeadListView(ListView):
     def get_context_data(self, **kwargs):
         context = super(OrderHeadListView, self).get_context_data(**kwargs)
         return context
+
+
+def update_sure_state(obj_id, state=None):
+    obj = OrderModel.objects.get(id=obj_id)
+    if obj.sure == state:
+        return
+    if state:
+        obj.sure = state
+    else:
+        obj.sure = not obj.sure
+    obj.save()
+    sync_material_count(obj)
+
+
+def update_head_sure_state(obj_id):
+    obj = OrderHeadModel.objects.get(id=obj_id)
+    print(obj)
 
 
 def sync_material_count(order):
@@ -256,4 +336,3 @@ def sync_form_paper(order, paper, count, sure):
         PaperFormModel.objects.filter(order=order).delete()
         paper.count += count
         paper.save()
-

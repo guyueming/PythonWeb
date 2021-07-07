@@ -1,65 +1,56 @@
 {% extends 'form.html' %}
 
 {% block form %}
-<form method="post" action="/home/order/submit/" class="basic-grey">
+<form method="post" class="basic-grey">
     {% csrf_token %}
     <h1>订单</h1>
-    <label><span>订单编号：</span><input type="text" name="order_number" value=""/></label>
-    <label><span>下单时间：</span><input type="date" name="order_time" value=""/></label><br>
-    <label><span>交货时间：</span><input type="date" name="delivery_time" value=""/></label><br>
-    <label><span>销售员：</span>
-        <select name="salesman">
-            {% for m in salesman_list %}
-            <option value={{ m.id }}>{{ m.name }}</option>
-            {%endfor%}
-        </select>
+    <label><span>订单编号：</span>
+        {{ head.order_number }}
     </label>
-    <label>
-        <span>厂家：</span>
-        <select name="customer">
-            {% for m in customer_list %}
-            <option value={{ m.id }}>{{ m.name }}</option>
-            {%endfor%}
-        </select>
+    <label><span>销售：</span>
+        {{ head.salesman }}
+    </label>
+    <label><span>客户：</span>
+        {{ head.customer }}
     </label>
     <label>
         <span>木料：</span>
-        <input type="number" name="wood_count" placeholder="数量" onkeyup="value=value.replace(/[^\d]/g,'')"/>
         <select name="wood">
             {% for m in wood_list %}
             <option value={{ m.id }}>{{ m.name }}</option>
             {%endfor%}
         </select>
+        <input type="number" name="wood_count" placeholder="数量" onkeyup="value=value.replace(/[^\d]/g,'')"/>
     </label>
     <label>
         <span>桉木皮：</span>
-        <input type="number" name="skin_count" placeholder="数量" onkeyup="value=value.replace(/[^\d]/g,'')"/>
         <select name="skin">
             <option value="">无</option>
             {% for m in skin_list %}
             <option value={{ m.id }}>{{ m.name }}</option>
             {%endfor%}
         </select>
+        <input type="number" name="skin_count" placeholder="数量" onkeyup="value=value.replace(/[^\d]/g,'')"/>
     </label>
     <label>
         <span>纸张：</span>
+        <input type="text" list="source" name="paper" autocomplete="off">
+        <datalist id="source">
+            {% for obj in paper_list %}
+            <option value={{ obj }}>{{ obj }}</option>
+            {%endfor%}
+        </datalist>
         <input type="number" name="paper_count" placeholder="数量" onkeyup="value=value.replace(/[^\d]/g,'')"/>
-        <select name="paper">
-            <option value="">无</option>
-            {% for m in paper_list %}
-            <option value={{ m.id }}>{{ m.name }}-{{ m.type }}-{{ m.factory }}</option>
-            {%endfor%}
-        </select>
     </label>
     <label>
         <span>纸张：</span>
-        <input type="number" name="other_paper_count" placeholder="数量" onkeyup="value=value.replace(/[^\d]/g,'')"/>
-        <select name="other_paper">
-            <option value="">无</option>
-            {% for m in paper_list %}
-            <option value={{ m.id }}>{{ m.name }}-{{ m.type }}-{{ m.factory }}</option>
+        <input type="text" list="other_paper_source" name="other_paper" autocomplete="off">
+        <datalist id="other_paper_source">
+            {% for obj in paper_list %}
+            <option value={{ obj }}>{{ obj }}</option>
             {%endfor%}
-        </select>
+        </datalist>
+        <input type="number" name="other_paper_count" placeholder="数量" onkeyup="value=value.replace(/[^\d]/g,'')"/>
     </label>
     <label>
         <span>钢板工艺：</span>

@@ -13,7 +13,7 @@
         <input list="source" name="name" autocomplete="off">
 		<datalist id="source">
             {% for obj in object_list %}
-            <option value={{ obj.id }}>{{ obj.name }}-{{ obj.type }}-{{ obj.factory }}</option>
+            <option value={{ obj }}>{{ obj }}</option>
             {%endfor%}
         </datalist>
     </label>
