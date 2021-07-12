@@ -1,10 +1,45 @@
 import time
 
 from django import forms
+from django.core.exceptions import ValidationError
+from django.db.models import Q
 from django.forms import ModelForm, BaseInlineFormSet
 from django.forms import inlineformset_factory
+from django.utils import formats
+
 from wood.models import WoodModel
+from paper.models import PaperModel
 from .models import OrderModel, OrderHeadModel, OrderNumberModel, FORM_TYPE
+
+
+class ListTextWidget(forms.TextInput):
+    def __init__(self, data_list, name, *args, **kwargs):
+        super(ListTextWidget, self).__init__(*args, **kwargs)
+        self._name = name
+        self._list = data_list
+
+    def render(self, name, value, attrs=None, renderer=None):
+        default_attrs = {'list': 'list__%s' % self._name}
+        if attrs:
+            default_attrs.update(attrs)
+        text_html = super(ListTextWidget, self).render(name, value, attrs=default_attrs)
+        data_list = '<datalist id="list__%s">' % self._name
+        for item in self._list:
+            data_list += '<option value="%s">' % item.id
+            data_list += '%s</option>' % item
+        data_list += '</datalist>'
+
+        return text_html + data_list
+
+
+def query_paper(name):
+    str_s = name.split('~')
+    if len(str_s) == 3:
+        q = (Q(color=str_s[0]))
+        q.add(Q(type=str_s[1]), Q.AND)
+        q.add(Q(factory=str_s[2]), Q.AND)
+        return PaperModel.objects.filter(q).first()
+    return None
 
 
 class DateInput(forms.DateInput):
@@ -29,12 +64,27 @@ class OrderModelForm(ModelForm):
         model = OrderModel
         fields = '__all__'
 
+    # def clean_paper(self):
+    #     value = self.cleaned_data['paper']
+    #     print(value)
+    #     value = query_paper(value)
+    #     if not value:
+    #         raise ValidationError(message="纸张选择错误")
+    #     else:
+    #         return value.id
+
 
 class OrderBaseInlineFormSet(BaseInlineFormSet):
     def add_fields(self, form, index):
         super(OrderBaseInlineFormSet, self).add_fields(form, index)
         form.fields['woodCount'].widget = forms.NumberInput(attrs={"style": "width:60; height:24px;"})
         form.fields['skinCount'].widget = forms.NumberInput(attrs={"style": "width:60; height:24px;"})
+        form.fields['paper'].widget = ListTextWidget(attrs={"style": "width:60; height:24px;"},
+                                                     name='paper',
+                                                     data_list=PaperModel.objects.filter(enable=True))
+        form.fields['other_paper'].widget = ListTextWidget(attrs={"style": "width:60; height:24px;"},
+                                                           name='other_paper',
+                                                           data_list=PaperModel.objects.filter(enable=True))
         form.fields['paperCount'].widget = forms.NumberInput(attrs={"style": "width:60; height:24px;"})
         form.fields['other_paper_count'].widget = forms.NumberInput(attrs={"style": "width:60; height:24px;"})
         form.fields['packaging'].widget = forms.TextInput(attrs={"style": "width:60; height:24px;/"})

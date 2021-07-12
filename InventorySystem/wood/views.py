@@ -89,12 +89,12 @@ def form_sure(request):
     obj = WoodFormModel.objects.get(id=obj_id)
     obj.sure = not obj.sure
     if obj.sure:
-        if obj.type == 1:
+        if obj.type == '1':
             obj.name.count += obj.count
         else:
             obj.name.count -= obj.count
     else:
-        if obj.type == 1:
+        if obj.type == '1':
             obj.name.count -= obj.count
         else:
             obj.name.count += obj.count

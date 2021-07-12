@@ -17,4 +17,4 @@ class PaperModel(models.Model):
     objects = models.manager
 
     def __str__(self):
-        return '%s-%s-%s' % (self.color, self.type, self.factory)
+        return '%s~%s~%s' % (self.color, self.type, self.factory)

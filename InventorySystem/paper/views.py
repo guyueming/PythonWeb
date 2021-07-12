@@ -58,7 +58,13 @@ class PaperListView(ListView):
     context_object_name = 'object_list'
 
     def get_queryset(self):
-        return PaperModel.objects.all().order_by('color')
+        q = Q()
+        name = self.request.GET.get('name')
+        if name:
+            q.add(Q(color__icontains=name), Q.OR)
+            q.add(Q(type__icontains=name), Q.OR)
+            q.add(Q(factory__icontains=name), Q.OR)
+        return PaperModel.objects.filter(q).order_by('color')
 
     def get_context_data(self, **kwargs):
         context = super(PaperListView, self).get_context_data(**kwargs)
@@ -77,7 +83,7 @@ def form_add(request):
 
 
 def query_paper(name):
-    str_s = name.split('-')
+    str_s = name.split('~')
     if len(str_s) == 3:
         q = (Q(color=str_s[0]))
         q.add(Q(type=str_s[1]), Q.AND)
@@ -108,12 +114,12 @@ def form_sure(request):
     obj = PaperFormModel.objects.get(id=obj_id)
     obj.sure = not obj.sure
     if obj.sure:
-        if obj.type == 1:
+        if obj.type == '1':
             obj.name.count += obj.count
         else:
             obj.name.count -= obj.count
     else:
-        if obj.type == 1:
+        if obj.type == '1':
             obj.name.count -= obj.count
         else:
             obj.name.count += obj.count

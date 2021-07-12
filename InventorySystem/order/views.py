@@ -24,8 +24,8 @@ def add_order(request, pk):
         technology_list = TechnologyModel.objects.filter(enable=True).order_by('name')
         specification_list = SpecificationModel.objects.filter(enable=True).order_by('name')
         return render(request, 'order.html', context={'wood_list': wood_list, 'skin_list': skin_list,
-                                                    'paper_list': paper_list, 'technology_list': technology_list,
-                                                    'specification_list': specification_list, 'head': head, })
+                                                      'paper_list': paper_list, 'technology_list': technology_list,
+                                                      'specification_list': specification_list, 'head': head, })
     else:
         wood_id = request.POST.get('wood')
         wood_count = int(request.POST.get('wood_count'))
