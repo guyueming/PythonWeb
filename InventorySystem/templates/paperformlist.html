@@ -23,7 +23,7 @@
             <tr>
                 <th scope="col" class="sortable column-id">序号</th>
                 <th scope="col" class="sortable column-name">时间</th>
-                <th scope="col" class="sortable column-name">名称</th>
+                <th scope="col" class="sortable column-name">纸张</th>
                 <th scope="col" class="sortable column-name">数量</th>
                 <th scope="col" class="sortable column-name">类型</th>
                 <th scope="col">状态</th>
@@ -31,9 +31,9 @@
             </tr>
             {% for form in object_list %}
             <tr>
-                <td>{{ form.id }}</td>
+                <td>{{ forloop.counter }}</td>
                 <td>{{ form.arrive_date }}</td>
-                <td>{{ form.name.name }}</td>
+                <td>{{ form.name.color }}-{{ form.name.type }}-{{ form.name.factory }}</td>
                 <td>{{ form.count }}</td>
                 <td>
                     {% if form.type == '1' %}
@@ -47,6 +47,7 @@
                     {% endif %}
                 </td>
                 <td>
+                    {% if not form.order %}
                     <a href="/home/paper/form/sure?id={{ form.id }}">
                         {% if form.sure %}
                         <input type="button" value="已确认">
@@ -54,10 +55,13 @@
                         <input type="button" value="确认">
                         {% endif %}
                     </a>
+                    {% endif %}
                 </td>
                 <td>
                     {% if form.order %}
-                    <input type="button" value="关联订单">
+                    <a href="/home/order/head/view/{{ form.order.id }}/">
+                        <input type="button" value="关联订单">
+                    </a>
                     {% else %}
                     <a href="/home/paper/form/del?id={{ form.id }}">
                         <input type="button" value="删除">

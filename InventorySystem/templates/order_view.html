@@ -3,10 +3,6 @@
 
 {% block extrahead %}
 <style type="text/css">
-    .delete-row {
-        margin-left:5px;
-    }
-
     /*表格样式*/
 	table {
 		width: 100%;
@@ -61,15 +57,15 @@
     {{ formset.non_form_errors }}
     <h2>订单详情</h2>
     <div class="entry" style="overflow:scroll;">
-        <table name="table" id="id_orders_table">
+        <table id="id_orders_table">
             <thead>
             <tr>
                 <th scope="col"></th>
                 <th scope="col">木料</th>
                 <th scope="col">桉木皮</th>
                 <th scope="col">纸张</th>
-                <th scope="col">规格</th>
                 <th scope="col">钢板工艺</th>
+                <th scope="col">规格</th>
                 <th scope="col">包装</th>
                 <th scope="col">厚度</th>
                 <th scope="col">打字</th>

@@ -12,11 +12,11 @@ def add(request):
     if request.method == 'POST':
         form = PaperForm(request.POST)
         if form.is_valid():
-            dic = {"name": form.cleaned_data['name'],
-                   "color": form.cleaned_data['color'],
+            dic = {"color": form.cleaned_data['color'],
                    "type": form.cleaned_data['type'],
                    "factory": form.cleaned_data['factory'],
-                   "note": form.cleaned_data['note']}
+                   "note": form.cleaned_data['note'],
+                   "count": form.cleaned_data['count']}
             PaperModel.objects.create(**dic)
             return HttpResponseRedirect('/home/paper/list/')
     else:
@@ -25,12 +25,11 @@ def add(request):
 
 
 def submit(request):
-    name = request.POST.get('name')
     model = request.POST.get('model')
     factory = request.POST.get('factory')
     color = request.POST.get('color')
     note = request.POST.get('note')
-    dic = {"name": name, "type": model, "factory": factory, "note": note, "color": color}
+    dic = {"type": model, "factory": factory, "note": note, "color": color}
     PaperModel.objects.create(**dic)
     return HttpResponseRedirect('/home/paper/list/')
 
@@ -59,7 +58,7 @@ class PaperListView(ListView):
     context_object_name = 'object_list'
 
     def get_queryset(self):
-        return PaperModel.objects.all().order_by('name')
+        return PaperModel.objects.all().order_by('color')
 
     def get_context_data(self, **kwargs):
         context = super(PaperListView, self).get_context_data(**kwargs)
@@ -68,18 +67,21 @@ class PaperListView(ListView):
 
 
 def form_add(request):
-    object_list = PaperModel.objects.filter(enable=True).order_by('name')
+    q = Q(enable=True)
+    obj_id = request.GET.get('id')
+    if obj_id:
+        q.add(Q(id=obj_id), Q.AND)
+    object_list = PaperModel.objects.filter(q).order_by('color')
     types = FORM_TYPE
     return render(request, 'paperform.html', context={'object_list': object_list, "types": types})
 
 
 def query_paper(name):
     str_s = name.split('-')
-    if len(str_s) == 4:
-        q = Q(name=str_s[0])
-        q.add(Q(color=str_s[1]), Q.AND)
-        q.add(Q(type=str_s[2]), Q.AND)
-        q.add(Q(factory=str_s[3]), Q.AND)
+    if len(str_s) == 3:
+        q = (Q(color=str_s[0]))
+        q.add(Q(type=str_s[1]), Q.AND)
+        q.add(Q(factory=str_s[2]), Q.AND)
         return PaperModel.objects.filter(q).first()
     return None
 
@@ -92,12 +94,13 @@ def form_submit(request):
     name = query_paper(obj)
     if name:
         dic = {"arrive_date": time, "name": name, "count": count, "type": form_type, "sure": True}
-        PaperFormModel.objects.create(**dic)
-        sync_count(obj.id, count, form_type == 1)
+        success = PaperFormModel.objects.create(**dic)
+        if success:
+            sync_count(name.id, count, form_type == 1)
         return HttpResponseRedirect('/home/paper/form/list/')
     else:
         messages.success(request, "纸张选择错误")
-    return HttpResponse(request)
+    return HttpResponseRedirect('/home/paper/form/list/')
 
 
 def form_sure(request):

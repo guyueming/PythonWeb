@@ -4,7 +4,6 @@ from django.utils.timezone import now
 
 class PaperModel(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.TextField('名称', max_length=64, unique=False, null=False)
     color = models.TextField('花色', max_length=64, default="")
     type = models.TextField('型号', max_length=64, default="")
     factory = models.TextField('厂家', max_length=64, default="")
@@ -18,4 +17,4 @@ class PaperModel(models.Model):
     objects = models.manager
 
     def __str__(self):
-        return '%s-%s-%s-%s' % (self.name, self.color, self.type,  self.factory)
+        return '%s-%s-%s' % (self.color, self.type, self.factory)

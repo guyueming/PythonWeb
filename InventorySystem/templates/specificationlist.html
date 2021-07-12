@@ -22,7 +22,7 @@
             </thead>
             {% for obj in object_list %}
             <tr>
-                <td>{{obj.id}}</td>
+                <td>{{ forloop.counter }}</td>
                 <td>{{obj.name}}</td>
                 <td>{{obj.note}}</td>
                 <td>

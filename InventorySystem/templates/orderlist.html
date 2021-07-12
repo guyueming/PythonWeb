@@ -28,11 +28,10 @@
                 <th scope="col" class="sortable column-id">序号</th>
                 <th scope="col" class="sortable column-id">订单编号</th>
                 <th scope="col" class="sortable column-name">木料</th>
-                <th scope="col" class="sortable column-name">数量</th>
                 <th scope="col" class="sortable column-name">桉木皮</th>
                 <th scope="col" class="sortable column-name">纸张</th>
-                <th scope="col" class="sortable column-name">规格</th>
                 <th scope="col" class="sortable column-name">钢板工艺</th>
+                <th scope="col" class="sortable column-name">规格</th>
                 <th scope="col" class="sortable column-name">包装</th>
                 <th scope="col" class="sortable column-name">厚度</th>
                 <th scope="col" class="sortable column-name">打字</th>
@@ -51,12 +50,18 @@
             <tr>
                 <td>{{ forloop.counter }}</td>
                 <td>{{ form.head_number.order_number }}</td>
-                <td>{{ form.wood.name }}</td>
-                <td>{{ form.woodCount }}</td>
-                <td>{{ form.skin.name }}({{ form.skinCount }})</td>
-                <td>{{ form.paper.name }}({{ form.paperCount }})
+                <td>{{ form.wood.name }}({{ form.woodCount }})</td>
+                <td>
+                    {% if form.skin %}
+                    {{ form.skin.name }}({{ form.skinCount }})
+                    {% endif %}
+                </td>
+                <td>
+                    {% if form.paper %}
+                    {{ form.paper }}({{ form.paperCount }})
+                    {% endif %}
                     {% if form.other_paper %}
-                    <br> {{ form.other_paper.name }}({{ form.other_paper_count }})
+                    <br> {{ form.other_paper }}({{ form.other_paper_count }})
                     {% endif %}
                 </td>
                 <td>{{form.technology.name}}</td>

@@ -4,12 +4,12 @@
 <form method="post" class="basic-grey">
     {% csrf_token %}
     <h1>纸张</h1>
-    <label style="color:#f00">{{ form.errors.name }}</label>
-    <label><span>{{ form.name.label }}：</span>{{ form.name }}</label>
+    <label style="color:#f00">{{ form.errors.color }}</label>
     <label><span>{{ form.type.label }}：</span>{{ form.type }}</label>
     <label><span>{{ form.color.label }}：</span>{{ form.color }}</label>
     <label><span>{{ form.factory.label }}：</span>{{ form.factory }}</label>
     <label><span>{{ form.note.label }}：</span>{{ form.note }}</label>
+    <label><span>{{ form.count.label }}：</span>{{ form.count }}</label>
     <label>
         <span></span>
         <input type="submit" value="提交">

@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from .models import SkinModel
@@ -60,7 +61,11 @@ class SkinListView(ListView):
 
 
 def form_add(request):
-    object_list = SkinModel.objects.filter(enable=True).order_by('name')
+    q = Q(enable=True)
+    obj_id = request.GET.get('id')
+    if obj_id:
+        q.add(Q(id=obj_id), Q.AND)
+    object_list = SkinModel.objects.filter(q).order_by('name')
     return render(request, 'skinform.html', context={'object_list': object_list, "types": FORM_TYPE})
 
 
@@ -69,14 +74,12 @@ def form_submit(request):
     mid = request.POST.get('name')
     count = int(request.POST.get('count'))
     form_type = int(request.POST.get('type'))
-    sure = request.POST.get('complete')
     obj = SkinModel.objects.get(id=mid)
     note = request.POST.get('note')
-    dic = {"arrive_date": time, "name": obj, "count": count, "type": form_type, "note": note}
-    if sure:
-        dic["sure"] = sure
+    dic = {"arrive_date": time, "name": obj, "count": count, "type": form_type, "note": note, "sure": True}
+    success = SkinFormModel.objects.create(**dic)
+    if success:
         sync_count(mid, count, form_type == 1)
-    SkinFormModel.objects.create(**dic)
     return HttpResponseRedirect('/home/skin/form/list/')
 
 

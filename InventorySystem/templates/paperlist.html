@@ -32,7 +32,6 @@
         <table id="result_list">
             <tr>
                 <th scope="col" class="sortable column-id">序号</th>
-                <th scope="col" class="sortable column-name">名称</th>
                 <th scope="col" class="sortable column-name">花色</th>
                 <th scope="col" class="sortable column-name">型号</th>
                 <th scope="col" class="sortable column-name">厂家</th>
@@ -43,8 +42,7 @@
             </tr>
             {% for obj in object_list %}
             <tr>
-                <td>{{obj.id}}</td>
-                <td>{{obj.name}}</td>
+                <td>{{ forloop.counter }}</td>
                 <td>{{obj.color}}</td>
                 <td>{{obj.type}}</td>
                 <td>{{obj.factory}}</td>

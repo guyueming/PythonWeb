@@ -146,6 +146,7 @@ def view_orders(request, pk):
             if formset.is_valid():
                 formset.save()
     else:
+        print("pk", pk)
         order_heads = OrderHeadModel.objects.filter(id=pk)
         if order_heads and len(order_heads) > 0:
             form = OrderHeadForm(instance=order_heads[0])
