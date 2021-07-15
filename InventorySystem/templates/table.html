@@ -102,15 +102,19 @@ nav {
             {% endif %}
             <!--中间的页码，如果是当前页，添加active属性-->
             {% for page in paginator.page_range %}
-            {% if page == page_obj.number %}
-            <li>
-                <a aria-current="page"><span>{{ page }}</span></a>
-            </li>
-            {% else %}
-            <li>
-                <a href="?{% param_replace page=page %}"><span>{{ page }}</span></a>
-            </li>
-            {% endif %}
+                {% if page < 3 or page > paginator.num_pages|add:-3 or page_obj.number > page|add:-4 and page_obj.number < page|add:4 %}
+                    {% if page == page_obj.number %}
+                        <li><a aria-current="page"><span>{{ page }}</span></a></li>
+                    {% else %}
+                        <li><a href="?{% param_replace page=page %}"><span>{{ page }}</span></a></li>
+                    {% endif %}
+                {% else %}
+                    {% if page == 3 %}
+                    <li><a><span>...</span></a></li>
+                    {% elif page == paginator.num_pages|add:-3 %}
+                    <li><a><span>...</span></a></li>
+                    {% endif %}
+                {% endif %}
             {% endfor %}
             <!--#下一页-->
             {% if page_obj.has_next %}

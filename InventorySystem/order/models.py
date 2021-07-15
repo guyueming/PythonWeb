@@ -72,6 +72,12 @@ class OrderModel(models.Model):
         verbose_name='桉木皮',
         on_delete=models.PROTECT, null=True, blank=True)
     skinCount = models.IntegerField('桉木皮数量', default=0, blank=True)
+    other_skin = models.ForeignKey(
+        SkinModel,
+        verbose_name='桉木皮2',
+        related_name='other_skin',
+        on_delete=models.PROTECT, null=True, blank=True)
+    other_skin_count = models.IntegerField('桉木皮数量2', default=0, blank=True)
     paper = models.ForeignKey(
         PaperModel,
         verbose_name='纸张1',
@@ -175,7 +181,6 @@ class PaperFormModel(models.Model):
         verbose_name='纸张',
         on_delete=models.PROTECT)
     count = models.IntegerField('数量', default=0)
-    factory = models.TextField('厂家', max_length=64)
     arrive_date = models.DateField('到货时间', default=now)
     type = models.CharField('类型', max_length=4, choices=FORM_TYPE, default='1')
     sure = models.BooleanField(

@@ -34,8 +34,8 @@
                 <th scope="col" class="sortable column-name">规格</th>
                 <th scope="col" class="sortable column-name">包装</th>
                 <th scope="col" class="sortable column-name">厚度</th>
-                <th scope="col" class="sortable column-name">打字</th>
-                <th scope="col" class="sortable column-name">商标</th>
+<!--                <th scope="col" class="sortable column-name">打字</th>-->
+<!--                <th scope="col" class="sortable column-name">商标</th>-->
                 <th scope="col" class="sortable column-name">开槽</th>
                 <th scope="col" class="sortable column-name">烘干</th>
 <!--                <th scope="col" class="sortable column-name">销售</th>-->
@@ -50,26 +50,29 @@
             <tr>
                 <td>{{ forloop.counter }}</td>
                 <td>{{ form.head_number.order_number }}</td>
-                <td>{{ form.wood.name }}({{ form.woodCount }})</td>
+                <td>{{ form.wood }}({{ form.woodCount }})</td>
                 <td>
                     {% if form.skin %}
-                    {{ form.skin.name }}({{ form.skinCount }})
+                        {{ form.skin }}({{ form.skinCount }})
+                    {% endif %}
+                    {% if form.other_skin %}
+                        <br>{{ form.other_skin }}({{ form.other_skin_count }})
                     {% endif %}
                 </td>
                 <td>
                     {% if form.paper %}
-                    {{ form.paper }}({{ form.paperCount }})
+                        {{ form.paper }}({{ form.paperCount }})({{ form.paper.count }})
                     {% endif %}
                     {% if form.other_paper %}
-                    <br> {{ form.other_paper }}({{ form.other_paper_count }})
+                        <br>{{ form.other_paper }}({{ form.other_paper_count }})({{ form.other_paper.count }})
                     {% endif %}
                 </td>
                 <td>{{form.technology.name}}</td>
                 <td>{{form.specifications.name}}</td>
                 <td>{{form.packaging}}</td>
                 <td>{{form.thickness}}</td>
-                <td>{{form.trademark}}</td>
-                <td>{{form.word}}</td>
+<!--                <td>{{form.trademark}}</td>-->
+<!--                <td>{{form.word}}</td>-->
                 <td>
                     {% if form.is_grooving %}
                     是
@@ -88,7 +91,9 @@
 <!--                <td>{{ form.head_number.customer.name }}</td>-->
 <!--                <td>{{ form.head_number.order_date }}</td>-->
 <!--                <td>{{ form.head_number.delivery_date }}</td>-->
-                <td>{{ form.note }}</td>
+                <td>
+                    {{ form.note }}
+                </td>
                 <td>
                     {% if form.head_number.complete %}
                     <input type="button" value="已完成">

@@ -165,6 +165,8 @@
                     // This fixes Issue 1, reported by Wilson.Andrew.J:
                     if (elem.is('input:checkbox') || elem.is('input:radio')) {
                         elem.attr('checked', false);
+                    } else if (elem.attr("type") == 'number') {
+                        elem.val("0");
                     } else {
                         elem.val('');
                     }

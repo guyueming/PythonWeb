@@ -288,11 +288,13 @@ def update_head_sure_state(obj_id):
 def sync_material_count(order):
     wood = order.wood
     skin = order.skin
+    other_skin = order.other_skin
     paper = order.paper
     other_paper = order.other_paper
 
     sync_form_wood(order, wood, order.woodCount, order.sure)
     sync_form_skin(order, skin, order.skinCount, order.sure)
+    sync_form_skin(order, other_skin, order.other_skin_count, order.sure)
     sync_form_paper(order, paper, order.paperCount, order.sure)
     sync_form_paper(order, other_paper, order.other_paper_count, order.sure)
 

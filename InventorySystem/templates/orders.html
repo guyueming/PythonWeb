@@ -8,15 +8,11 @@
             // ('form') isn't correct.
             // Django appears to generate the prefix from the lowercase plural
             // name of the related model, with camel-case converted to underscores.
-            prefix: 'ordered_items'
+            prefix: 'ordermodel_set'
         })
     })
 </script>
-<style type="text/css">
-    .delete-row {
-        margin-left:5px;
-    }
-
+<style>
     /*表格样式*/
 	table {
 		width: 100%;
@@ -75,7 +71,7 @@
                 {{ dict }}
             {% endfor %}
         </label>
-        <table name="table" id="id_orders_table">
+        <table id="id_orders_table">
             <thead>
             <tr>
                 <th scope="col">木料</th>
@@ -98,12 +94,11 @@
             <tr id="{{ form.prefix }}-row">
                 <td>
                     {{ form.id }}
-                    {{ form.wood }}
-                    {{ form.woodCount }}
+                    {{ form.wood }} {{ form.woodCount }}
                 </td>
                 <td>
-                    {{ form.skin }}
-                    {{ form.skinCount }}
+                    {{ form.skin }} {{ form.skinCount }}<br>
+                    {{ form.other_skin }} {{ form.other_skin_count }}
                 </td>
                 <td>
                     {{ form.paper }} {{ form.paperCount }}<br>

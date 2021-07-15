@@ -131,14 +131,14 @@ class WoodFormListView(ListView):
     context_object_name = 'object_list'
 
     def get_queryset(self):
+        q = Q()
         name = self.request.GET.get('name')
         obj_id = self.request.GET.get('id')
-        q = Q()
-        if name:
-            id_list = WoodModel.objects.filter(name__contains=name)
-            q.add(Q(name_id__in=id_list), Q.OR)
         if obj_id:
             q.add(Q(name_id=obj_id), Q.AND)
+        elif name:
+            id_list = WoodModel.objects.filter(name__contains=name)
+            q.add(Q(name__in=id_list), Q.AND)
         return WoodFormModel.objects.filter(q).order_by('-id')
 
     def get_context_data(self, **kwargs):

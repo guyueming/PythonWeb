@@ -1,19 +1,21 @@
 {% extends 'form.html' %}
 
+{% load order_extras %}
+
 {% block form %}
 <form method="post" action="/home/paper/form/submit/" class="basic-grey">
     {% csrf_token %}
     <h1>纸张出入记录</h1>
     <label>
         <span>到货时间：</span>
-        <input type="date" name="time" value="2021-05-24"/>
+        <input type="date" name="time" value="{% default_time %}"/>
     </label><br>
     <label>
         <span>纸张：</span>
-        <input list="source" name="name" autocomplete="off">
+        <input list="source" name="name" autocomplete="off" style="width:300px">
 		<datalist id="source">
             {% for obj in object_list %}
-            <option value={{ obj }}>{{ obj }}</option>
+            <option>{{ obj }}</option>
             {%endfor%}
         </datalist>
     </label>

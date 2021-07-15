@@ -130,8 +130,15 @@ class SkinFormListView(ListView):
     context_object_name = 'object_list'
 
     def get_queryset(self):  # 重写get_queryset方法
-        # 获取所有is_deleted为False的用户，并且以时间倒序返回数据
-        return SkinFormModel.objects.all().order_by('-id')
+        q = Q()
+        name = self.request.GET.get('name')
+        obj_id = self.request.GET.get('id')
+        if obj_id:
+            q.add(Q(name_id=obj_id), Q.AND)
+        elif name:
+            id_list = SkinModel.objects.filter(name__contains=name)
+            q.add(Q(name__in=id_list), Q.AND)
+        return SkinFormModel.objects.filter(q).order_by('-id')
 
     def get_context_data(self, **kwargs):
         context = super(SkinFormListView, self).get_context_data(**kwargs)

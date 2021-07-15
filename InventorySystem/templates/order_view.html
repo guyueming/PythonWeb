@@ -86,15 +86,18 @@
                 </td>
                 <td>
                     {% if form.instance.skin %}
-                    {{ form.instance.skin }} {{ form.instance.skinCount }}
+                    {{ form.instance.skin }} {{ form.instance.skinCount }}<br>
+                    {% endif %}
+                    {% if form.instance.other_skin %}
+                    {{ form.instance.other_skin }} {{ form.instance.other_skin_ount }}
                     {% endif %}
                 </td>
                 <td>
                     {% if form.instance.paper %}
-                    {{ form.instance.paper }} {{ form.instance.paperCount }}<br>
+                    {{ form.instance.paper }} ({{ form.instance.paperCount }}) ({{ form.instance.paper.count }})<br>
                     {% endif %}
                     {% if form.instance.other_paper %}
-                    {{ form.instance.other_paper }} {{ form.instance.other_paper_count }}
+                    {{ form.instance.other_paper }} ({{ form.instance.other_paper_count }}) ({{ form.instance.other_paper.count }})
                     {% endif %}
                 </td>
                 <td>

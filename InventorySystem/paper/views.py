@@ -156,7 +156,16 @@ class PaperFormListView(ListView):
     context_object_name = 'object_list'
 
     def get_queryset(self):  # 重写get_queryset方法
-        return PaperFormModel.objects.all().order_by('-id')
+        q = Q()
+        obj_id = self.request.GET.get('id')
+        if obj_id:
+            q.add(Q(name_id=obj_id), Q.AND)
+        else:
+            q_paper = make_query(self.request.GET.get('name'))
+            id_list = PaperModel.objects.filter(q_paper)
+            q.add(Q(name__in=id_list), Q.OR)
+
+        return PaperFormModel.objects.filter(q).order_by('-id')
 
     def get_context_data(self, **kwargs):
         context = super(PaperFormListView, self).get_context_data(**kwargs)
@@ -171,3 +180,11 @@ def sync_count(mid, count, state):
     else:
         PaperModel.objects.filter(id=mid).update(count=(obj.count - count))
 
+
+def make_query(name):
+    q = Q()
+    if name:
+        q.add(Q(color__icontains=name), Q.OR)
+        q.add(Q(type__icontains=name), Q.OR)
+        q.add(Q(factory__icontains=name), Q.OR)
+    return q

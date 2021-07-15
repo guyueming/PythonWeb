@@ -79,10 +79,11 @@ class OrderBaseInlineFormSet(BaseInlineFormSet):
         super(OrderBaseInlineFormSet, self).add_fields(form, index)
         form.fields['woodCount'].widget = forms.NumberInput(attrs={"style": "width:60; height:24px;"})
         form.fields['skinCount'].widget = forms.NumberInput(attrs={"style": "width:60; height:24px;"})
-        form.fields['paper'].widget = ListTextWidget(attrs={"style": "width:60; height:24px;"},
+        form.fields['other_skin_count'].widget = forms.NumberInput(attrs={"style": "width:60; height:24px;"})
+        form.fields['paper'].widget = ListTextWidget(attrs={"style": "width:120; height:24px;"},
                                                      name='paper',
                                                      data_list=PaperModel.objects.filter(enable=True))
-        form.fields['other_paper'].widget = ListTextWidget(attrs={"style": "width:60; height:24px;"},
+        form.fields['other_paper'].widget = ListTextWidget(attrs={"style": "width:120; height:24px;"},
                                                            name='other_paper',
                                                            data_list=PaperModel.objects.filter(enable=True))
         form.fields['paperCount'].widget = forms.NumberInput(attrs={"style": "width:60; height:24px;"})
@@ -93,34 +94,32 @@ class OrderBaseInlineFormSet(BaseInlineFormSet):
         form.fields['word'].widget = forms.TextInput(attrs={"style": "width:60; height:24px;"})
         form.fields['note'].widget = forms.Textarea(attrs={"style": "width:80; height:24px;"})
         form.fields['wood'].widget.attrs = {"style": "width:80; height:24px;"}
-        form.fields['paper'].widget.attrs = {"style": "width:120; height:24px;"}
-        form.fields['other_paper'].widget.attrs = {"style": "width:120; height:24px;"}
 
-    def clean(self):
-        # get forms that actually have valid data
-        count = 0
-        delete_checked = 0
-        for form in self.forms:
-            try:
-                if form.cleaned_data:
-                    count += 1
-                    if form.cleaned_data['DELETE']:
-                        delete_checked += 1
-                    if not form.cleaned_data['DELETE']:
-                        delete_checked -= 1
-            except AttributeError:
-                # annoyingly, if a subform is invalid Django explicity raises
-                # an AttributeError for cleaned_data
-                pass
-
-        # Case no images uploaded
-        if count < 1:
-            raise forms.ValidationError(
-                'At least one image is required.')
-
-        # Case one image added and another deleted
-        if delete_checked > 0 and OrderModel.objects.filter(product=self.instance).count() == 1:
-            raise forms.ValidationError("At least one image is required.")
+    # def clean(self):
+    #     # get forms that actually have valid data
+    #     count = 0
+    #     delete_checked = 0
+    #     for form in self.forms:
+    #         try:
+    #             if form.cleaned_data:
+    #                 count += 1
+    #                 if form.cleaned_data['DELETE']:
+    #                     delete_checked += 1
+    #                 if not form.cleaned_data['DELETE']:
+    #                     delete_checked -= 1
+    #         except AttributeError:
+    #             # annoyingly, if a subform is invalid Django explicity raises
+    #             # an AttributeError for cleaned_data
+    #             pass
+    #
+    #     # Case no images uploaded
+    #     if count < 1:
+    #         raise forms.ValidationError(
+    #             'At least one image is required.')
+    #
+    #     # Case one image added and another deleted
+    #     if delete_checked > 0 and OrderModel.objects.filter(product=self.instance).count() == 1:
+    #         raise forms.ValidationError("At least one image is required.")
 
 
 OrderFormSet = inlineformset_factory(OrderHeadModel, OrderModel, OrderModelForm, OrderBaseInlineFormSet,

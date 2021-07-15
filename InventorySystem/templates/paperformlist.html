@@ -5,7 +5,7 @@
     <div class="top_tool_bar">
         <form method="get">
             {% csrf_token %}
-            <input type="text" name="name" placeholder="搜索名称">
+            <input type="text" name="name" placeholder="搜索纸张">
             <button type="submit">
                 <span>搜索</span>
             </button>
@@ -33,7 +33,7 @@
             <tr>
                 <td>{{ forloop.counter }}</td>
                 <td>{{ form.arrive_date }}</td>
-                <td>{{ form.name.color }}-{{ form.name.type }}-{{ form.name.factory }}</td>
+                <td>{{ form.name }}</td>
                 <td>{{ form.count }}</td>
                 <td>
                     {% if form.type == '1' %}
