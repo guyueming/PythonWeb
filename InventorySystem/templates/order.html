@@ -33,6 +33,16 @@
         <input type="number" name="skin_count" placeholder="数量" onkeyup="value=value.replace(/[^\d]/g,'')"/>
     </label>
     <label>
+        <span>桉木皮：</span>
+        <select name="other_skin">
+            <option value="">无</option>
+            {% for m in skin_list %}
+            <option value={{ m.id }}>{{ m.name }}</option>
+            {%endfor%}
+        </select>
+        <input type="number" name="other_skin_count" placeholder="数量" onkeyup="value=value.replace(/[^\d]/g,'')"/>
+    </label>
+    <label>
         <span>纸张：</span>
         <input type="text" list="source" name="paper" autocomplete="off">
         <datalist id="source">

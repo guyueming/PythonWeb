@@ -20,7 +20,7 @@ def add_order(request, pk):
     if request.method == "GET":
         wood_list = WoodModel.objects.filter(enable=True).order_by('name')
         skin_list = SkinModel.objects.filter(enable=True).order_by('name')
-        paper_list = PaperModel.objects.filter(enable=True).order_by('name')
+        paper_list = PaperModel.objects.filter(enable=True).order_by('color')
         technology_list = TechnologyModel.objects.filter(enable=True).order_by('name')
         specification_list = SpecificationModel.objects.filter(enable=True).order_by('name')
         return render(request, 'order.html', context={'wood_list': wood_list, 'skin_list': skin_list,
@@ -57,6 +57,13 @@ def add_order(request, pk):
             dic["skin"] = skin
             dic["skinCount"] = skin_count
 
+        other_skin_id = request.POST.get('other_skin')
+        if other_skin_id:
+            other_skin = SkinModel.objects.get(id=skin_id)
+            other_skin_count = int(request.POST.get('other_skin_count'))
+            dic["other_skin"] = other_skin
+            dic["other_skin_count"] = other_skin_count
+
         paper_name = request.POST.get('paper')
         paper = query_paper(paper_name)
         if paper:
@@ -83,12 +90,11 @@ def add_order(request, pk):
 
 
 def query_paper(name):
-    str_s = name.split('-')
-    if len(str_s) == 4:
-        q = Q(name=str_s[0])
-        q.add(Q(color=str_s[1]), Q.AND)
-        q.add(Q(type=str_s[2]), Q.AND)
-        q.add(Q(factory=str_s[3]), Q.AND)
+    str_s = name.split('~')
+    if len(str_s) == 3:
+        q = Q(color=str_s[0])
+        q.add(Q(type=str_s[1]), Q.AND)
+        q.add(Q(factory=str_s[2]), Q.AND)
         return PaperModel.objects.filter(q).first()
     return None
 
