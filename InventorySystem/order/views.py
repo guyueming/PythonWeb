@@ -59,20 +59,20 @@ def add_order(request, pk):
 
         other_skin_id = request.POST.get('other_skin')
         if other_skin_id:
-            other_skin = SkinModel.objects.get(id=skin_id)
+            other_skin = SkinModel.objects.get(id=other_skin_id)
             other_skin_count = int(request.POST.get('other_skin_count'))
             dic["other_skin"] = other_skin
             dic["other_skin_count"] = other_skin_count
 
         paper_name = request.POST.get('paper')
-        paper = query_paper(paper_name)
+        paper = PaperModel.objects.first_item(paper_name)
         if paper:
             paper_count = int(request.POST.get('paper_count'))
             dic["paper"] = paper
             dic["paperCount"] = paper_count
 
         other_paper_name = request.POST.get('other_paper')
-        other_paper = query_paper(other_paper_name)
+        other_paper = PaperModel.objects.first_item(other_paper_name)
         if other_paper:
             other_paper_count = int(request.POST.get('other_paper_count'))
             dic["other_paper"] = other_paper
@@ -80,23 +80,10 @@ def add_order(request, pk):
 
         order = OrderModel.objects.create(**dic)
         if order:
-            sync_form_wood(order, order.wood, order.woodCount, True)
-            sync_form_skin(order, order.skin, order.skinCount, True)
-            sync_form_paper(order, order.paper, order.paperCount, True)
-            sync_form_paper(order, order.other_paper, order.other_paper_count, True)
+            sync_material_count(order)
         else:
             messages.success(request, "创建失败")
         return HttpResponseRedirect('/home/order/list/')
-
-
-def query_paper(name):
-    str_s = name.split('~')
-    if len(str_s) == 3:
-        q = Q(color=str_s[0])
-        q.add(Q(type=str_s[1]), Q.AND)
-        q.add(Q(factory=str_s[2]), Q.AND)
-        return PaperModel.objects.filter(q).first()
-    return None
 
 
 def get_order_number():
@@ -178,7 +165,6 @@ def edit_orders(request, pk):
                 if item.is_valid():
                     products.append(item)
                 else:
-                    print(item)
                     success = False
             if success:
                 for item in products:
@@ -192,7 +178,6 @@ def edit_orders(request, pk):
     else:
         form = OrderHeadForm(instance=order_head)
         formset = ViewOrderFormSet(instance=order_head)
-        print(formset)
     return render(request, 'orders.html', {'form': form, 'formset': formset, })
 
 
@@ -247,7 +232,7 @@ def make_head_delete(request):
 
 
 class OrderListView(ListView):
-    paginate_by = 10
+    paginate_by = 12
     model = OrderModel
     template_name = 'orderlist.html'
     context_object_name = 'object_list'
@@ -261,7 +246,7 @@ class OrderListView(ListView):
 
 
 class OrderHeadListView(ListView):
-    paginate_by = 10
+    paginate_by = 16
     model = OrderModel
     template_name = 'orderheadlist.html'
     context_object_name = 'object_list'
@@ -292,11 +277,16 @@ def update_head_sure_state(obj_id):
 
 
 def sync_material_count(order):
+    print('sync_material_count')
     wood = order.wood
     skin = order.skin
     other_skin = order.other_skin
+    print(skin.id, order.other_skin_count)
+    print(other_skin.id, order.other_skin_count)
     paper = order.paper
     other_paper = order.other_paper
+    print(other_paper.id, order.other_paper_count)
+    print(paper.id, order.other_paper_count)
 
     sync_form_wood(order, wood, order.woodCount, order.sure)
     sync_form_skin(order, skin, order.skinCount, order.sure)

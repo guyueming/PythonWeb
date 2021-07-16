@@ -52,7 +52,11 @@ class SkinListView(ListView):
     context_object_name = 'object_list'
 
     def get_queryset(self):
-        return SkinModel.objects.all().order_by('name')
+        q = Q()
+        name = self.request.GET.get('name')
+        if name:
+            q.add(Q(name__contains=name), Q.AND)
+        return SkinModel.objects.filter(q).order_by('name')
 
     def get_context_data(self, **kwargs):
         context = super(SkinListView, self).get_context_data(**kwargs)

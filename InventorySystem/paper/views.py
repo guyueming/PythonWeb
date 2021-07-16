@@ -82,22 +82,12 @@ def form_add(request):
     return render(request, 'paperform.html', context={'object_list': object_list, "types": types})
 
 
-def query_paper(name):
-    str_s = name.split('~')
-    if len(str_s) == 3:
-        q = (Q(color=str_s[0]))
-        q.add(Q(type=str_s[1]), Q.AND)
-        q.add(Q(factory=str_s[2]), Q.AND)
-        return PaperModel.objects.filter(q).first()
-    return None
-
-
 def form_submit(request):
     time = request.POST.get('time')
     count = int(request.POST.get('count'))
     form_type = int(request.POST.get('type'))
     obj = request.POST.get('name')
-    name = query_paper(obj)
+    name = PaperModel.objects.first_item(obj)
     if name:
         dic = {"arrive_date": time, "name": name, "count": count, "type": form_type, "sure": True}
         success = PaperFormModel.objects.create(**dic)
@@ -161,8 +151,7 @@ class PaperFormListView(ListView):
         if obj_id:
             q.add(Q(name_id=obj_id), Q.AND)
         else:
-            q_paper = make_query(self.request.GET.get('name'))
-            id_list = PaperModel.objects.filter(q_paper)
+            id_list = PaperModel.objects.query_str(self.request.GET.get('name'))
             q.add(Q(name__in=id_list), Q.OR)
 
         return PaperFormModel.objects.filter(q).order_by('-id')
@@ -179,12 +168,3 @@ def sync_count(mid, count, state):
         PaperModel.objects.filter(id=mid).update(count=(obj.count + count))
     else:
         PaperModel.objects.filter(id=mid).update(count=(obj.count - count))
-
-
-def make_query(name):
-    q = Q()
-    if name:
-        q.add(Q(color__icontains=name), Q.OR)
-        q.add(Q(type__icontains=name), Q.OR)
-        q.add(Q(factory__icontains=name), Q.OR)
-    return q

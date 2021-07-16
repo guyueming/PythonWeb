@@ -51,9 +51,12 @@ class WoodListView(ListView):
     template_name = 'woodlist.html'
     context_object_name = 'object_list'
 
-    def get_queryset(self):  # 重写get_queryset方法
-        # 获取所有is_deleted为False的用户，并且以时间倒序返回数据
-        return WoodModel.objects.all().order_by('name')
+    def get_queryset(self):
+        q = Q()
+        name = self.request.GET.get('name')
+        if name:
+            q.add(Q(name__contains=name), Q.AND)
+        return WoodModel.objects.filter(q).order_by('name')
 
     def get_context_data(self, **kwargs):
         context = super(WoodListView, self).get_context_data(**kwargs)
