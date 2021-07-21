@@ -238,7 +238,15 @@ class OrderListView(ListView):
     context_object_name = 'object_list'
 
     def get_queryset(self):
-        return OrderModel.objects.all().order_by('-id')
+        q = Q()
+        obj_id = self.request.GET.get('id')
+        if obj_id:
+            q.add(Q(head_number_id=obj_id), Q.AND)
+        else:
+            id_list = PaperModel.objects.query_str(self.request.GET.get('paper'))
+            q.add(Q(paper__in=id_list), Q.OR)
+            q.add(Q(other_paper__in=id_list), Q.OR)
+        return OrderModel.objects.filter(q).order_by('-id')
 
     def get_context_data(self, **kwargs):
         context = super(OrderListView, self).get_context_data(**kwargs)
@@ -277,16 +285,11 @@ def update_head_sure_state(obj_id):
 
 
 def sync_material_count(order):
-    print('sync_material_count')
     wood = order.wood
     skin = order.skin
     other_skin = order.other_skin
-    print(skin.id, order.other_skin_count)
-    print(other_skin.id, order.other_skin_count)
     paper = order.paper
     other_paper = order.other_paper
-    print(other_paper.id, order.other_paper_count)
-    print(paper.id, order.other_paper_count)
 
     sync_form_wood(order, wood, order.woodCount, order.sure)
     sync_form_skin(order, skin, order.skinCount, order.sure)

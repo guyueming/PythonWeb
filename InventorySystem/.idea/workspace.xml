@@ -3,15 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="92d2d102-baef-4209-931c-07d22f983af8" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/customer/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/order/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/order/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/paper/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/paper/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/paper/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/paper/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/skin/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/skin/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/skinlist.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/skinlist.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/woodlist.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/woodlist.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/wood/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/wood/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
