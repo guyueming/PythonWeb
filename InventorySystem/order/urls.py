@@ -14,5 +14,6 @@ urlpatterns = [
     path('head/complete/', views.make_head_complete),
     path('head/del/', views.make_head_delete),
     path('head/view/<int:pk>/', views.view_orders, name='view_orders'),
+    path('head/view/detail/<int:pk>/', views.view_detail_orders, name='view_detail_orders'),
     path('head/edit/<int:pk>/', views.edit_orders, name='edit_orders'),
 ]

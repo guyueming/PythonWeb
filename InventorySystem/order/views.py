@@ -1,5 +1,4 @@
 import time
-
 from django.contrib import messages
 from django.db.models import Q
 from django.http import HttpResponseRedirect, HttpResponse
@@ -149,6 +148,17 @@ def view_orders(request, pk):
     return HttpResponseRedirect('/home/order/list/')
 
 
+def view_detail_orders(request, pk):
+    detail = OrderModel.objects.filter(id=pk).first()
+    if detail:
+        order_heads = OrderHeadModel.objects.filter(id=detail.head_number.id)
+        if order_heads and len(order_heads) > 0:
+            form = OrderHeadForm(instance=order_heads[0])
+            formset = ViewOrderFormSet(instance=order_heads[0])
+            return render(request, 'order_view.html', {'form': form, 'formset': formset, })
+    return HttpResponseRedirect('/home/order/list/')
+
+
 def edit_orders(request, pk):
     try:
         order_head = OrderHeadModel.objects.get(id=pk)
@@ -157,23 +167,25 @@ def edit_orders(request, pk):
 
     if request.method == "POST":
         form = OrderHeadForm(request.POST, instance=order_head)
-        formset = ViewOrderFormSet(request.POST)
+        formset = ViewOrderFormSet(request.POST, instance=order_head)
         if form.is_valid() and formset.is_valid():
             products = []
-            success = False
+            success = True
             for item in formset:
-                if item.is_valid():
+                if item.is_valid() and item.has_changed():
+                    print('test', len(products))
                     products.append(item)
                 else:
                     success = False
             if success:
-                for item in products:
-                    model = item.save(commit=False)
-                    update_sure_state(model.id, False)
-                    model.save()
-                    update_sure_state(model.id, True)
                 if form.has_changed():
                     form.save()
+                for item in products:
+                    model = item.save(commit=False)
+                    if model.id:
+                        update_sure_state(model.id, False)
+                    model.save()
+                    update_sure_state(model.id, True)
                 return HttpResponseRedirect('/home/order/list/')
     else:
         form = OrderHeadForm(instance=order_head)
@@ -239,13 +251,24 @@ class OrderListView(ListView):
 
     def get_queryset(self):
         q = Q()
-        obj_id = self.request.GET.get('id')
-        if obj_id:
-            q.add(Q(head_number_id=obj_id), Q.AND)
-        else:
-            id_list = PaperModel.objects.query_str(self.request.GET.get('paper'))
+        # customer = self.request.GET.get('customer')
+        # if customer:
+        #     id_list = CustomerModel.objects.filter(name__icontains=customer)
+        #     q.add(Q(customer__in=id_list), Q.AND)
+        # wood = self.request.GET.get('wood')
+        # if wood:
+        #     id_list = WoodModel.objects.filter(name__icontains=wood)
+        #     q.add(Q(wood__in=id_list), Q.AND)
+        papers = self.request.GET.get('paper')
+        if papers:
+            id_list = PaperModel.objects.query_str(papers)
             q.add(Q(paper__in=id_list), Q.OR)
             q.add(Q(other_paper__in=id_list), Q.OR)
+        # skins = self.request.GET.get('skin')
+        # if skins:
+        #     id_list = SkinModel.objects.filter(name__icontains=wood)
+        #     q.add(Q(skin__in=id_list), Q.OR)
+        #     q.add(Q(other_skin__in=id_list), Q.OR)
         return OrderModel.objects.filter(q).order_by('-id')
 
     def get_context_data(self, **kwargs):
@@ -285,17 +308,11 @@ def update_head_sure_state(obj_id):
 
 
 def sync_material_count(order):
-    wood = order.wood
-    skin = order.skin
-    other_skin = order.other_skin
-    paper = order.paper
-    other_paper = order.other_paper
-
-    sync_form_wood(order, wood, order.woodCount, order.sure)
-    sync_form_skin(order, skin, order.skinCount, order.sure)
-    sync_form_skin(order, other_skin, order.other_skin_count, order.sure)
-    sync_form_paper(order, paper, order.paperCount, order.sure)
-    sync_form_paper(order, other_paper, order.other_paper_count, order.sure)
+    sync_form_wood(order, order.wood, order.woodCount, order.sure)
+    sync_form_skin(order, order.skin, order.skinCount, order.sure)
+    sync_form_skin(order, order.other_skin, order.other_skin_count, order.sure)
+    sync_form_paper(order, order.paper, order.paperCount, order.sure)
+    sync_form_paper(order, order.other_paper, order.other_paper_count, order.sure)
 
 
 def sync_form_wood(order, wood, count, sure):

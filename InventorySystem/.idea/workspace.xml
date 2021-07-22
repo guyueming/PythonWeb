@@ -2,13 +2,32 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="92d2d102-baef-4209-931c-07d22f983af8" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/order/make_excel.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/order/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/order/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/order/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/order/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/paper/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/paper/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/paper/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/paper/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/order_view.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/order_view.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/orderlist.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/orderlist.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/paperformlist.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/paperformlist.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/paperlist.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/paperlist.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/skinformlist.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/skinformlist.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/woodformlist.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/woodformlist.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
@@ -59,10 +78,24 @@
       <option name="presentableId" value="Default" />
       <updated>1626362171257</updated>
       <workItem from="1626362172778" duration="10652000" />
+      <workItem from="1626876005123" duration="3714000" />
+      <workItem from="1626965327623" duration="3519000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
 </project>

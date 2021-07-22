@@ -1,7 +1,11 @@
+import time
+
 from django.contrib import messages
 from django.db.models import Q
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
+
+from order import make_excel
 from .forms import PaperForm
 from .models import PaperModel
 from order.models import FORM_TYPE, PaperFormModel
@@ -49,6 +53,19 @@ def delete(request):
     except Exception as e:
         messages.success(request, e.args)
     return HttpResponseRedirect('/home/paper/list/')
+
+
+def output(request):
+
+    date = time.localtime()
+    filename = time.strftime("%Y-%m-%d %H:%M", date)
+    path = filename + '.xls'
+    # response = StreamingHttpResponse(file_iterator(path[0]))
+    response = HttpResponse(content_type='application/vnd.ms-excel')
+    # response['Content-Type'] = 'application/octet-stream'
+    response['Content-Disposition'] = 'attachment;filename="{0}"'.format(path)
+    response.write(make_excel.expert())
+    return response
 
 
 class PaperListView(ListView):

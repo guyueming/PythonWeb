@@ -82,14 +82,14 @@
                     {{ forloop.counter }}
                 </td>
                 <td>
-                    {{ form.instance.wood }} {{ form.instance.woodCount }}
+                    {{ form.instance.wood }} ({{ form.instance.woodCount }})
                 </td>
                 <td>
                     {% if form.instance.skin %}
-                    {{ form.instance.skin }} {{ form.instance.skinCount }}<br>
+                    {{ form.instance.skin }} ({{ form.instance.skinCount }})<br>
                     {% endif %}
                     {% if form.instance.other_skin %}
-                    {{ form.instance.other_skin }} {{ form.instance.other_skin_ount }}
+                    {{ form.instance.other_skin }} ({{ form.instance.other_skin_count }})
                     {% endif %}
                 </td>
                 <td>

@@ -7,6 +7,7 @@ urlpatterns = [
     path('submit/', views.submit),
     path('enable/', views.enable),
     path('del/', views.delete),
+    path('output/', views.output),
 
     path('form/add', views.form_add, name='add_form'),
     path('form/list/', views.PaperFormListView.as_view(), name='paper_form_list'),
