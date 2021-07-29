@@ -251,24 +251,24 @@ class OrderListView(ListView):
 
     def get_queryset(self):
         q = Q()
-        # customer = self.request.GET.get('customer')
-        # if customer:
-        #     id_list = CustomerModel.objects.filter(name__icontains=customer)
-        #     q.add(Q(customer__in=id_list), Q.AND)
-        # wood = self.request.GET.get('wood')
-        # if wood:
-        #     id_list = WoodModel.objects.filter(name__icontains=wood)
-        #     q.add(Q(wood__in=id_list), Q.AND)
+        customer = self.request.GET.get('customer')
+        if customer and len(customer) > 0:
+            id_list = CustomerModel.objects.filter(name__icontains=customer)
+            q.add(Q(customer__in=id_list), Q.AND)
+        wood = self.request.GET.get('wood')
+        if wood and len(wood) > 0:
+            id_list = WoodModel.objects.filter(name__icontains=wood)
+            q.add(Q(wood__in=id_list), Q.AND)
         papers = self.request.GET.get('paper')
-        if papers:
+        if papers and len(papers) > 0:
             id_list = PaperModel.objects.query_str(papers)
-            q.add(Q(paper__in=id_list), Q.OR)
-            q.add(Q(other_paper__in=id_list), Q.OR)
-        # skins = self.request.GET.get('skin')
-        # if skins:
-        #     id_list = SkinModel.objects.filter(name__icontains=wood)
-        #     q.add(Q(skin__in=id_list), Q.OR)
-        #     q.add(Q(other_skin__in=id_list), Q.OR)
+            p_q = Q(Q(paper__in=id_list) | Q(other_paper__in=id_list))
+            q.add(p_q, Q.AND)
+        skins = self.request.GET.get('skin')
+        if skins and len(skins) > 0:
+            id_list = SkinModel.objects.filter(name__icontains=skins)
+            s_q = Q(Q(skin__in=id_list) | Q(other_skin__in=id_list))
+            q.add(s_q, Q.AND)
         return OrderModel.objects.filter(q).order_by('-id')
 
     def get_context_data(self, **kwargs):
