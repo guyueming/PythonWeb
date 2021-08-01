@@ -49,21 +49,47 @@
             <tr>
                 <td>{{ forloop.counter }}</td>
                 <td>{{ form.head_number.order_number }}</td>
-                <td>{{ form.wood }}({{ form.woodCount }})</td>
+                <td>{{ form.wood }}({{ form.woodCount }})
+                    {% if form.wood.count > 0 %}
+                        ({{ form.wood.count }})
+                    {% else %}
+                        <span style="color: #f00">({{ form.wood.count }})</span>
+                    {% endif %}
+                </td>
                 <td>
                     {% if form.skin %}
-                        {{ form.skin }}({{ form.skinCount }})
+                        {{ form.skin }}({{ form.skinCount }}
+                        {% if form.skin.count > 0 %}
+                            ({{ form.skin.count }}))
+                        {% else %}
+                            <span style="color: #f00">({{ form.skin.count }}))</span>
+                        {% endif %}
                     {% endif %}
                     {% if form.other_skin %}
-                        <br>{{ form.other_skin }}({{ form.other_skin_count }})
+                        <br>{{ form.other_skin }}({{ form.other_skin_count }}
+                        {% if form.other_skin.count > 0 %}
+                            ({{ form.other_skin.count }}))
+                        {% else %}
+                            <span style="color: #f00">({{ form.other_skin.count }}))</span>
+                        {% endif %}
                     {% endif %}
                 </td>
                 <td>
                     {% if form.paper %}
-                        {{ form.paper }}({{ form.paperCount }})({{ form.paper.count }})
+                        {{ form.paper }}({{ form.paperCount }})
+                        {% if form.paper.count > 0 %}
+                            ({{ form.paper.count }})
+                        {% else %}
+                            <span style="color: #f00">({{ form.paper.count }})</span>
+                        {% endif %}
                     {% endif %}
                     {% if form.other_paper %}
-                        <br>{{ form.other_paper }}({{ form.other_paper_count }})({{ form.other_paper.count }})
+                        <br>{{ form.other_paper }}({{ form.other_paper_count }})
+                        {% if form.other_paper.count > 0 %}
+                            ({{ form.other_paper.count }})
+                        {% else %}
+                            <span style="color: #f00">({{ form.other_paper.count }})</span>
+                        {% endif %}
                     {% endif %}
                 </td>
                 <td>{{form.technology.name}}</td>
