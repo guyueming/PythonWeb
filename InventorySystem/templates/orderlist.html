@@ -26,6 +26,7 @@
             <tr>
                 <th scope="col" class="sortable column-id">序号</th>
                 <th scope="col" class="sortable column-id">订单编号</th>
+                <th scope="col" class="sortable column-name">客户</th>
                 <th scope="col" class="sortable column-name">木料</th>
                 <th scope="col" class="sortable column-name">桉木皮</th>
                 <th scope="col" class="sortable column-name">纸张</th>
@@ -38,7 +39,6 @@
                 <th scope="col" class="sortable column-name">开槽</th>
                 <th scope="col" class="sortable column-name">烘干</th>
 <!--                <th scope="col" class="sortable column-name">销售</th>-->
-<!--                <th scope="col" class="sortable column-name">客户</th>-->
 <!--                <th scope="col" class="sortable column-name">下单时间</th>-->
 <!--                <th scope="col" class="sortable column-name">交货时间</th>-->
                 <th scope="col" class="sortable column-name">备注</th>
@@ -49,6 +49,7 @@
             <tr>
                 <td>{{ forloop.counter }}</td>
                 <td>{{ form.head_number.order_number }}</td>
+                <td>{{ form.head_number.customer.name }}</td>
                 <td>{{ form.wood }}({{ form.woodCount }})
                     {% if form.wood.count > 0 %}
                         ({{ form.wood.count }})
@@ -113,7 +114,6 @@
                     {% endif %}
                 </td>
 <!--                <td>{{ form.head_number.salesman.name }}</td>-->
-<!--                <td>{{ form.head_number.customer.name }}</td>-->
 <!--                <td>{{ form.head_number.order_date }}</td>-->
 <!--                <td>{{ form.head_number.delivery_date }}</td>-->
                 <td>
